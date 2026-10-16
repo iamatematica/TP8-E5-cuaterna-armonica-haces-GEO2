@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP8 · E5 Cuaterna armónica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF8F1; --paper-2:#FFFDF8; --paper-3:#FFFFFF;
+  --ink:#20201C; --ink-soft:#4C4942; --ink-faint:#8A857A;
+  --rule:#E7E0D1; --rule-2:#D7CDB9;
+  --blue:#2B5A93; --blue-soft:#5E7CA8; --blue-wash:#E8EFF6;
+  --amber:#C77A40; --amber-soft:#D89D52; --amber-wash:#F6EBD8;
+  --green:#45785A; --green-wash:#E7EFE7;
+  --rust:#BC5235; --rust-wash:#F5E5DD;
+  --grid:rgba(43,90,147,.05);
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Hanken Grotesk",system-ui,sans-serif;
+  --math:"STIX Two Text","STIXGeneral","Times New Roman",serif;
+  --lab-terra:#b57d4c; --lab-blue:#415a8e; --lab-dark:#20201c; --lab-cream:#faf8f1; --lab-gray:#6579a1;
+  --navy:#0f2244;
+  --r:12px; --rl:16px; --rxl:24px;
+  --sh:0 4px 6px -1px rgba(32,32,28,.08),0 2px 4px -1px rgba(32,32,28,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);min-height:100vh;line-height:1.65}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.25;color:var(--blue)}
+h1{font-size:clamp(1.45rem,3.2vw,2.1rem)}
+p{margin-bottom:.7em}
+strong{color:var(--ink);font-weight:600}
+ul,ol{padding-left:1.5em;margin:8px 0} li{margin-bottom:5px}
+
+/* ===== chrome oficial (laboratoriobest-chrome) ===== */
+.topbar{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6e 100%);color:#e0f2fe;padding:14px 0;box-shadow:0 2px 8px rgba(0,0,0,.15);position:relative;z-index:1}
+.topbar-inner{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-inspt{font-size:12px;color:#7dd3fc;letter-spacing:.1em;font-weight:700}
+.brand-title{font-family:'Fraunces',serif;font-size:18px;color:#fff;font-weight:700}
+.brand-sub{font-size:12px;color:#bfdbfe}
+.lab-logo{background:var(--lab-cream);padding:8px 18px 7px;border-radius:12px;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.lab-name{display:flex;align-items:center;font-family:'Fraunces',Georgia,serif;font-size:16px;font-weight:700;letter-spacing:-0.01em;line-height:1.2}
+.lab-name .bullet{width:8px;height:8px;border-radius:50%;background:var(--lab-terra);flex-shrink:0;margin-right:7px}
+.lab-name .lab{color:var(--lab-dark)} .lab-name .best{color:var(--lab-terra)} .lab-name .ia{color:var(--lab-blue)}
+.lab-sub{color:var(--lab-gray);font-size:11px;font-weight:500;margin-top:1px;padding-left:15px;font-family:var(--sans)}
+.ej-lab{font-family:'Fraunces',Georgia,serif;font-size:12.5px;font-weight:700;display:flex;align-items:center}
+.ej-lab .bullet{width:6px;height:6px;border-radius:50%;background:var(--lab-terra);margin-right:5px}
+.ej-lab .lab{color:var(--lab-dark);opacity:.75} .ej-lab .best{color:var(--lab-terra)} .ej-lab .ia{color:var(--lab-blue)}
+.site-footer{background:var(--navy);color:#cbd5e1;padding:30px 0 24px;margin-top:40px;position:relative;z-index:1}
+.footer-inner{max-width:1080px;margin:0 auto;padding:0 20px;text-align:center}
+.footer-quote{font-family:'Fraunces',serif;font-style:italic;font-size:1.1rem;color:#e0f2fe;margin-bottom:12px}
+.footer-coaut{font-size:13px;color:#cbd5e1;margin-bottom:14px}
+.footer-lab{display:inline-block;background:var(--lab-cream);padding:10px 22px 9px;border-radius:12px;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.footer-lab .lab-name{font-size:17px} .footer-lab .lab-sub{font-size:12px}
+
+/* ===== intro, pestañas ===== */
+.intro{background:linear-gradient(180deg,var(--paper-2) 0%,var(--paper) 100%);padding:30px 0 18px;text-align:center;position:relative;z-index:1}
+.intro-inner{max-width:780px;margin:0 auto;padding:0 20px}
+.intro-badge{display:inline-block;background:var(--blue-wash);color:var(--blue);padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:.04em;margin-bottom:14px;text-transform:uppercase}
+.intro-desc{color:var(--ink-soft);font-size:15px;max-width:640px;margin:12px auto 0}
+.tabs-wrap{background:var(--paper-3);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:50;box-shadow:0 2px 4px rgba(32,32,28,.04)}
+.tabs-nav{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;gap:6px;overflow-x:auto;overflow-y:hidden!important;scrollbar-width:thin}
+.tab-btn{background:transparent;border:none;padding:14px 20px;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--ink-faint);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tab-btn:hover{color:var(--blue)} .tab-btn.active{color:var(--ink);border-bottom-color:var(--amber)}
+main{max-width:900px;margin:0 auto;padding:28px 20px 60px;position:relative;z-index:1}
+.tab-content{display:none;animation:fadeIn .3s ease} .tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tema-intro{background:linear-gradient(135deg,var(--blue) 0%,#1e4275 100%);color:#fff;border-radius:var(--rxl);padding:24px 28px;margin-bottom:26px;position:relative;overflow:hidden}
+.tema-intro::before{content:'laboratoriobest-IA';position:absolute;right:-20px;bottom:-30px;font-size:88px;font-weight:900;color:rgba(255,255,255,.04);font-family:var(--serif);letter-spacing:-3px;pointer-events:none}
+.tema-title{color:#fff;font-size:1.6rem;margin-bottom:4px}
+.tema-title em{font-style:italic;color:var(--amber-wash)}
+.tema-desc{color:rgba(255,255,255,.75);font-size:14px;margin:0}
+.tema-intro .mi{color:#fff}
+
+/* ===== tarjeta ===== */
+.ejercicio{background:var(--paper-3);border-radius:var(--rl);padding:26px 28px;margin-bottom:22px;box-shadow:var(--sh);border:1px solid var(--rule);border-top:4px solid var(--ej,var(--blue));position:relative;overflow:hidden}
+.ejercicio::before{content:'';position:absolute;top:-30px;right:-30px;width:180px;height:180px;background:radial-gradient(circle at center,rgba(181,125,76,.06) 0%,rgba(65,90,142,.04) 40%,transparent 70%);pointer-events:none;z-index:0}
+.ejercicio>*{position:relative;z-index:1}
+.ejercicio[data-ej="5"]{--ej:#a34d6d;--ej-soft:#f9eef3;--ej-border:#e5c3d2}
+.ej-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.ej-badge{background:var(--ej,var(--blue));color:#fff;padding:6px 16px;border-radius:30px;font-size:13px;font-weight:700;letter-spacing:.02em}
+.ej-enunciado{background:var(--ej-soft,var(--blue-wash));border:1px solid var(--ej-border,var(--rule-2));border-radius:var(--r);padding:14px 18px;margin-bottom:16px;font-size:15px;color:var(--ink-soft)}
+.enun-label,.clave-label,.err-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.enun-label{color:var(--ej,var(--blue))}
+.enun-incisos{list-style:none;padding-left:.4em;margin:8px 0 0}
+.enun-incisos li{margin-bottom:3px}
+.clave{background:var(--amber-wash);border:1px solid rgba(199,122,64,.3);border-left:4px solid var(--amber);border-radius:0 var(--r) var(--r) 0;padding:13px 17px;margin:14px 0;font-size:14.5px;color:var(--ink-soft)}
+.clave-label{color:var(--amber)}
+.errtip{background:var(--rust-wash);border-left:4px solid var(--rust);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin:14px 0;font-size:14.5px;color:var(--ink-soft)}
+.err-label{color:var(--rust)}
+
+/* ===== pasos ===== */
+.step{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);margin-bottom:10px;scroll-margin-top:70px;overflow:hidden}
+.step-header{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;user-select:none}
+.step-badge{background:var(--ej,var(--blue));color:#fff;font-size:11px;font-weight:800;letter-spacing:.05em;padding:4px 11px;border-radius:20px;flex-shrink:0}
+.step-title{font-family:var(--serif);font-size:1.02rem;color:var(--ink);font-weight:600;flex:1}
+.chev{color:var(--ej,var(--blue));font-size:15px;transition:transform .2s;flex-shrink:0}
+.step.open .chev{transform:rotate(180deg)}
+.step-body{display:none;font-size:15px;color:var(--ink-soft);padding:14px 18px 16px;border-top:1px solid var(--rule)}
+.step.open .step-body{display:block}
+
+/* ===== matemática (STIX Two Text, cursiva sólo en variables) ===== */
+.mi,.calc,.calc-final,.prop{font-family:var(--math);font-style:normal}
+.mi{font-size:1.08em;color:var(--ink)}
+.mi i,.calc i,.calc-final i,.prop i,.ans-content i{font-style:italic}
+.ro{font-style:normal}
+.at{display:inline-block;white-space:nowrap}
+.fr{display:inline-flex;flex-direction:column;text-align:center;margin:0 .14em;vertical-align:middle;line-height:1.15}
+.fr .fn{padding:0 .4em .1em}
+.fr .fd{padding:.12em .4em 0;border-top:1.3px solid currentColor}
+sub,sup{font-size:.72em;line-height:0;vertical-align:baseline;position:relative}
+sub{top:.34em} sup{top:-.48em}
+.os{margin:0 .26em} .ob{margin:0 .15em} .ou{margin-right:.02em} .pc{margin-right:.22em} .psc{margin:0 .16em}
+.prop{background:var(--blue-wash);border:1px solid #c9d7e8;border-left:4px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:11px 16px;margin:10px 0;font-size:15.5px;color:var(--ink)}
+.prop .prop-tag{display:block;font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.prop .mi{font-size:1em}
+.calc{background:var(--paper-3);border:1px solid var(--rule);border-left:3px solid var(--blue-soft);padding:10px 14px;margin:10px 0;font-size:16px;color:var(--ink);border-radius:0 8px 8px 0}
+.calc .mi,.calc-final .mi{font-size:1em}
+.calc-final{background:var(--ej-soft,var(--blue-wash));border-left:4px solid var(--ej,var(--blue));padding:12px 16px;margin:12px 0;font-size:16.5px;font-weight:600;color:var(--ink);border-radius:0 8px 8px 0}
+.calc .txt,.calc-final .txt{font-family:var(--sans);font-size:14.5px;font-weight:500;color:var(--ink-soft)}
+
+/* ===== respuesta ===== */
+.ans-box{background:linear-gradient(135deg,var(--green-wash) 0%,#f0f7f0 100%);border:2px solid #a7c9b2;border-radius:var(--r);margin-top:18px;overflow:hidden;scroll-margin-top:70px}
+.ans-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 20px;cursor:pointer;user-select:none}
+.ans-header .chev{color:var(--green)} .ans-box.open .ans-header .chev{transform:rotate(180deg)}
+.ans-label{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.ans-content{display:none;color:#2e5540;font-size:15px;padding:0 20px 16px}
+.ans-box.open .ans-content{display:block}
+.ans-content .mi{color:#2e5540}
+
+/* ===== figuras ===== */
+.fig{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);margin:14px 0;overflow:hidden}
+.fig svg,.fig canvas{width:100%;display:block}
+.fig canvas{touch-action:none;cursor:grab}
+.fig-ctrl{display:flex;gap:8px 16px;padding:9px 14px;background:var(--paper);border-top:1px solid var(--rule);flex-wrap:wrap;align-items:center}
+.fig-ctrl label{display:flex;align-items:center;gap:5px;font-size:13.5px;color:var(--ink-soft);cursor:pointer}
+input[type=checkbox]{accent-color:var(--blue)}
+.fig-leg{display:flex;gap:14px;flex-wrap:wrap;padding:7px 14px;font-size:12.5px;color:var(--ink-faint);border-top:1px solid var(--rule)}
+.leg{display:flex;align-items:center;gap:5px}
+.leg>i{width:10px;height:10px;border-radius:50%;flex-shrink:0;display:inline-block}
+.fig-title{font-family:var(--serif);font-weight:600;color:var(--blue);padding:10px 14px 0;font-size:1rem}
+.lab-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;padding:10px 14px;border-top:1px solid var(--rule);background:var(--paper-3)}
+.lab-dato{background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--ink-soft)}
+.lab-dato b{display:block;font-family:var(--math);font-size:17px;color:var(--ink);font-weight:600}
+.lab-aviso{grid-column:1/-1;font-size:13.5px;color:var(--ink-soft);min-height:1.4em}
+.lab-aviso.alerta{color:var(--rust)}
+.btn-sec{padding:6px 14px;border-radius:8px;border:1px solid var(--rule-2);background:var(--paper-3);font-family:var(--sans);font-size:13px;color:var(--ink-soft);cursor:pointer}
+.btn-sec:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ===== mini test ===== */
+.mini-test{background:var(--blue-wash);border:1px solid rgba(43,90,147,.16);border-radius:var(--r);padding:17px 19px;margin-top:16px}
+.mini-test h4{font-size:.95rem;margin-bottom:9px}
+.mt-item+.mt-item{margin-top:16px;padding-top:14px;border-top:1px solid rgba(43,90,147,.16)}
+.mini-test .mt-q{font-size:14.5px;color:var(--ink-soft);margin-bottom:11px}
+.opts{list-style:none;display:flex;flex-direction:column;gap:7px;padding:0} .opts li{margin:0}
+.opt{width:100%;text-align:left;padding:9px 13px;background:var(--paper-3);border:1.5px solid var(--rule);border-radius:8px;font-family:var(--sans);font-size:14px;cursor:pointer;transition:all .16s;color:var(--ink-soft)}
+.opt:hover{border-color:var(--blue);background:var(--paper-2)}
+.opt.ok{background:var(--green-wash);border-color:var(--green);color:var(--green)}
+.opt.bad{background:var(--rust-wash);border-color:var(--rust);color:var(--rust)}
+.test-fb{margin-top:10px;padding:9px 13px;border-radius:8px;font-size:14px;display:none}
+.test-fb.show{display:block}
+.test-fb.ok{background:var(--green-wash);color:var(--green);border:1px solid #a7c9b2}
+.test-fb.bad{background:var(--rust-wash);color:var(--rust);border:1px solid #d9a898}
+
+/* ===== varios ===== */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:14px 0 18px}
+.cnode{background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:13px 11px;text-align:center}
+.cnode .ic{font-size:1.25rem;margin-bottom:5px}
+.cnode .lb{font-size:13px;font-weight:500;color:var(--ink-soft);line-height:1.4}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px;margin:16px 0}
+.sum-card{background:var(--paper-3);border:1px solid var(--rule);border-radius:10px;padding:14px;box-shadow:var(--sh)}
+.sum-card .ic{font-size:1.15rem;margin-bottom:5px}
+.sum-card h4{font-size:.9rem;margin-bottom:5px}
+.sum-card p{font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0}
+.section-h{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--blue);margin:22px 0 8px}
+.btn-print{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer}
+.btn-print:hover{background:#1e4275}
+.tabla{width:100%;border-collapse:collapse;margin:10px 0;font-size:14.5px}
+.tabla th,.tabla td{border:1px solid var(--rule);padding:6px 10px;text-align:center}
+.tabla th{background:var(--blue-wash);color:var(--blue);font-family:var(--sans);font-size:12.5px;letter-spacing:.03em}
+.tabla td{font-family:var(--math);background:var(--paper-3)}
+.tabla-wrap{overflow-x:auto;overflow-y:hidden!important}
+
+/* ===== pasos: tenemos / hacemos / obtenemos ===== */
+.tho{margin:2px 0 8px}
+.tho-r{display:grid;grid-template-columns:88px 1fr;gap:8px;padding:3px 0;font-size:14.5px;color:var(--ink-soft)}
+.tho-l{font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);padding-top:4px;font-style:normal}
+.calc-final .tho-l{display:block;color:var(--ej);padding-top:0;margin-bottom:3px}
+.fs{opacity:0;transition:opacity .35s}
+.fs.on{opacity:1}
+.fs.on.nuevo{filter:drop-shadow(0 0 2.5px rgba(163,77,109,.9))}
+.fig-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;background:var(--paper);border-top:1px solid var(--rule)}
+.fig-nav .btn-sec:disabled{opacity:.4;cursor:default}
+.fig-cont{font-size:13px;font-weight:600;color:var(--ink-soft)}
+.fig-pasos{padding:10px 14px 4px;border-top:1px solid var(--rule);background:var(--paper-3)}
+.fig-paso{display:none}
+.fig-paso.on{display:block}
+.fig-paso-tit{font-family:var(--serif);font-weight:600;color:var(--ink);font-size:.98rem;margin-bottom:4px}
+.fig-paso .tho-r{font-size:13.5px}
+.fig-paso .calc-final{font-size:15px;margin:6px 0 8px}
+.step.open{border-color:var(--ej-border)}
+.teo{--ej:var(--blue)}
+.teo .step-title{font-size:.98rem}
+.teo .step-body{padding:6px 14px 10px}
+.teo.open{border-color:#c9d7e8}
+.grp-h{font-family:var(--sans);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin:16px 2px 8px}
+.ej-steps-col > .grp-h:first-child{margin-top:0}
+.cap-g{font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:2px}
+@media (min-width:1100px){
+  main{max-width:1240px}
+  .tab-content[data-tab="inicio"],.tab-content[data-tab="resumen"]{max-width:860px;margin:0 auto}
+  .ejercicio{overflow:clip}
+  .ej-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+  .ej-fig-col{position:sticky;top:64px}
+  .ej-fig-col .fig{margin-top:0}
+  .ej-fig-col svg{max-height:calc(100vh - 360px)}
+}
+@media (max-width:640px){
+  .tho-r{grid-template-columns:1fr;gap:0}
+  .fig-nav .btn-sec{padding:6px 9px;font-size:12px}
+  .topbar-inner{justify-content:center;text-align:center}
+  .ejercicio{padding:18px 14px} .step-header{padding:11px 13px} .step-body{padding:12px 12px 14px}
+  .tema-intro{padding:18px 20px} .tema-title{font-size:1.3rem}
+  .tab-btn{padding:12px 13px;font-size:13px}
+}
+@media print{
+  .tabs-wrap,.fig-ctrl,.btn-print,#lab-fig{display:none!important}
+  .tab-content{display:block!important}
+  .step-body,.ans-content{display:block!important}
+  body::before{display:none}
+  .fs{opacity:1!important} .fig-nav{display:none!important} .ej-fig-col{position:static}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div>
+        <div class="brand-inspt">I·N·S·P·T &nbsp;·&nbsp; UTN</div>
+        <div class="brand-title">Resoluciones · TP8 Ejercicio 5</div>
+        <div class="brand-sub">Geometría II</div>
+      </div>
+    </div>
+    <div class="lab-logo">
+      <div class="lab-name"><span class="bullet"></span><span class="lab">laboratorio</span><span class="best">best</span><span class="ia">-IA</span></div>
+      <div class="lab-sub">Prof. Ariel L. Cardozo Delgado</div>
+    </div>
+  </div>
+</header>
+
+<section class="intro">
+  <div class="intro-inner">
+    <div class="intro-badge">📐 Plano proyectivo · razón doble</div>
+    <h1>Cuarta armónica en dos haces perspectivos</h1>
+    <p class="intro-desc">Se construye el cuarto armónico <span class="mi"><i>D</i></span> sobre el eje y se lo une con cada vértice: de ahí salen <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span>, y los incisos c) y d) se justifican con la misma construcción.</p>
+  </div>
+</section>
+
+<div class="tabs-wrap">
+  <div class="tabs-nav">
+    <button class="tab-btn active" data-tab="inicio">🏠 Inicio</button>
+    <button class="tab-btn" data-tab="e5">E5 · Resolución</button>
+    <button class="tab-btn" data-tab="resumen">📋 Resumen</button>
+  </div>
+</div>
+
+<main id="main-content">
+<section class="tab-content active" data-tab="inicio">
+  <div class="tema-intro">
+    <h2 class="tema-title">Cuaterna armónica <em>en dos haces perspectivos</em></h2>
+    <p class="tema-desc">TP8 · Ejercicio 5. Unidad: Plano proyectivo — perspectividad entre haces de rectas y razón doble de cuatro rectas.</p>
+  </div>
+
+  <h3 class="section-h">🗺 Mapa de conceptos</h3>
+  <div class="concept-grid">
+    <div class="cnode"><div class="ic">✳️</div><div class="lb"><strong>Haz de rectas</strong><br>todas las rectas por un vértice</div></div>
+    <div class="cnode"><div class="ic">📏</div><div class="lb"><strong>Eje de perspectividad</strong><br>homólogas que se cortan sobre <span class="mi"><i>e</i></span></div></div>
+    <div class="cnode"><div class="ic">✂️</div><div class="lb"><strong>Sección del haz</strong><br>cortarlo con una recta</div></div>
+    <div class="cnode"><div class="ic">🔢</div><div class="lb"><strong>Razón doble</strong><br>la misma en toda sección</div></div>
+    <div class="cnode"><div class="ic">⚖️</div><div class="lb"><strong>Cuaterna armónica</strong><br>razón doble <span class="mi"><span class="ou">−</span>1</span></div></div>
+    <div class="cnode"><div class="ic">✏️</div><div class="lb"><strong>Cuarto armónico</strong><br>se construye con regla</div></div>
+    <div class="cnode"><div class="ic">🔁</div><div class="lb"><strong>Perspectividad entre rectas</strong><br>conserva la razón doble</div></div>
+    <div class="cnode"><div class="ic">♾</div><div class="lb"><strong>Punto impropio</strong><br>aparece si <span class="mi"><i>C</i></span> es el punto medio de <span class="mi"><i>A</i><i>B</i></span></div></div>
+  </div>
+
+  <h3 class="section-h">🧰 Herramientas teóricas mínimas</h3>
+  <p>Abrí la que necesites: cada paso de la resolución cita la que usa.</p>
+  
+  <div class="step teo">
+    <div class="step-header"><span class="step-title">¿Qué es la razón doble de cuatro puntos?</span><span class="chev">▾</span></div>
+    <div class="step-body"><div class="prop"><span class="prop-tag">Definición · Razón doble de cuatro puntos alineados</span><span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="fr"><span class="fn"><i>C</i><i>A</i><span class="ob">·</span><i>D</i><i>B</i></span><span class="fd"><i>C</i><i>B</i><span class="ob">·</span><i>D</i><i>A</i></span></span></span> &nbsp;con segmentos orientados sobre la recta que los contiene.</div></div>
+  </div>
+  
+  <div class="step teo">
+    <div class="step-header"><span class="step-title">¿Cómo se lee la razón doble de un haz?</span><span class="chev">▾</span></div>
+    <div class="step-body"><div class="prop"><span class="prop-tag">Teorema · Razón doble de cuatro rectas de un haz</span>Si <span class="mi"><i>a</i><span class="pc">,</span><i>b</i><span class="pc">,</span><i>c</i><span class="pc">,</span><i>d</i><span class="os">∈</span><span class="ro">haz</span><sub><i>O</i></sub></span> y una recta <span class="mi"><i>s</i></span> que no pasa por <span class="mi"><i>O</i></span> las corta en <span class="mi"><i>A</i><sub><i>s</i></sub><span class="pc">,</span><i>B</i><sub><i>s</i></sub><span class="pc">,</span><i>C</i><sub><i>s</i></sub><span class="pc">,</span><i>D</i><sub><i>s</i></sub></span>, entonces <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><sub><i>s</i></sub><i>B</i><sub><i>s</i></sub><i>C</i><sub><i>s</i></sub><i>D</i><sub><i>s</i></sub>)</span>, y el valor no depende de la recta <span class="mi"><i>s</i></span> elegida.</div></div>
+  </div>
+  
+  <div class="step teo">
+    <div class="step-header"><span class="step-title">¿Qué es una cuaterna armónica?</span><span class="chev">▾</span></div>
+    <div class="step-body"><div class="prop"><span class="prop-tag">Definición · Cuaterna armónica</span><span class="mi"><i>a</i><span class="pc">,</span><i>b</i><span class="pc">,</span><i>c</i><span class="pc">,</span><i>d</i></span> forman cuaterna armónica si <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span>. Dadas <span class="mi"><i>a</i><span class="pc">,</span><i>b</i><span class="pc">,</span><i>c</i></span> distintas, existe una única <span class="mi"><i>d</i></span> que lo cumple: se llama cuarta armónica de <span class="mi"><i>c</i></span> respecto de <span class="mi"><i>a</i></span> y <span class="mi"><i>b</i></span>.</div></div>
+  </div>
+  
+  <div class="step teo">
+    <div class="step-header"><span class="step-title">¿Qué hace la perspectividad entre haces?</span><span class="chev">▾</span></div>
+    <div class="step-body"><div class="prop"><span class="prop-tag">Teorema · Perspectividad entre haces</span>Si <span class="mi"><i>e</i></span> es eje de perspectividad entre <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span> y <span class="mi"><span class="ro">haz</span><sub><i>O</i>′</sub></span>, a cada recta <span class="mi"><i>x</i></span> del primero le corresponde la recta que une <span class="mi"><i>O</i>′</span> con el punto <span class="mi"><i>X</i><span class="os">=</span><i>x</i><span class="os">∩</span><i>e</i></span>:<br><span class="mi"><i>x</i>′<span class="os">=</span><i>O</i>′<i>X</i></span>.<br>Es decir, las rectas homólogas se cortan sobre el eje. Toda perspectividad conserva la razón doble: <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>a</i>′<i>b</i>′<i>c</i>′<i>d</i>′)</span>.</div></div>
+  </div>
+  
+  <div class="step teo">
+    <div class="step-header"><span class="step-title">¿Qué conserva una perspectividad entre rectas?</span><span class="chev">▾</span></div>
+    <div class="step-body"><div class="prop"><span class="prop-tag">Teorema · Perspectividad entre rectas</span>Sean dos rectas distintas y un punto <span class="mi"><i>O</i></span> que no está en ninguna de las dos. La perspectividad de centro <span class="mi"><i>O</i></span> lleva cada punto <span class="mi"><i>X</i></span> de la primera al punto donde <span class="mi"><i>O</i><i>X</i></span> corta a la segunda. Toda perspectividad entre rectas conserva la razón doble.</div></div>
+  </div>
+  
+  <div class="step teo">
+    <div class="step-header"><span class="step-title">¿Cómo se construye el cuarto armónico?</span><span class="chev">▾</span></div>
+    <div class="step-body"><div class="prop"><span class="prop-tag">Construcción · Cuarto armónico (apunte «La cuaterna armónica»)</span>Dados <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> en una recta <span class="mi"><i>r</i></span>: se toma <span class="mi"><i>P</i><span class="os">∉</span><i>r</i></span>; se trazan <span class="mi"><i>P</i><i>A</i></span> y <span class="mi"><i>P</i><i>B</i></span>; una recta por <span class="mi"><i>C</i></span>, distinta de <span class="mi"><i>r</i></span>, que no pase por <span class="mi"><i>P</i></span>, las corta en <span class="mi"><i>R</i></span> y <span class="mi"><i>Q</i></span>; se trazan <span class="mi"><i>R</i><i>B</i></span> y <span class="mi"><i>Q</i><i>A</i></span>, que se cortan en <span class="mi"><i>S</i></span>; la recta <span class="mi"><i>P</i><i>S</i></span> corta a <span class="mi"><i>r</i></span> en el cuarto armónico <span class="mi"><i>D</i></span>: <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</div></div>
+  </div>
+
+  <h3 class="section-h">🧗 Cómo usar este recurso</h3>
+  <p>Cada paso arranca cerrado y su título es una pregunta: intentá responderla en papel antes de abrirlo. La figura avanza junto con el texto: al abrir un paso, la figura muestra ese momento de la construcción, y con sus botones se pasa al paso siguiente. Cada paso dice qué tenemos, qué hacemos y qué obtenemos. El laboratorio del final te deja mover los vértices, el punto <span class="mi"><i>C</i></span> y la recta <span class="mi"><i>s</i></span> para comprobar que la construcción funciona en cualquier posición.</p>
+</section>
+<section class="tab-content" data-tab="e5">
+  <div class="ejercicio" data-ej="5">
+    <div class="ej-header">
+      <span class="ej-badge">Ejercicio E5 · TP8</span>
+      <span class="ej-lab"><span class="bullet"></span><span class="lab">laboratorio</span><span class="best">best</span><span class="ia">-IA</span></span>
+    </div>
+    <div class="ej-enunciado">
+      <div class="enun-label">Enunciado</div>
+      Siendo <span class="mi"><i>a</i><span class="pc">,</span><i>b</i><span class="pc">,</span><i>c</i><span class="os">∈</span><span class="ro">haz</span><sub><i>O</i></sub></span>; <span class="mi"><i>a</i>′<span class="pc">,</span><i>b</i>′<span class="pc">,</span><i>c</i>′<span class="os">∈</span><span class="ro">haz</span><sub><i>O</i>′</sub></span>; <span class="mi"><i>e</i></span> eje de perspectividad; <span class="mi"><i>a</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>A</i></span>, <span class="mi"><i>b</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>B</i></span>, <span class="mi"><i>c</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>C</i></span>. Se pide:
+      <ul class="enun-incisos"><li><b>a)</b> Hallar <span class="mi"><i>d</i><span class="os">∈</span><span class="ro">haz</span><sub><i>O</i></sub></span> tal que <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</li><li><b>b)</b> Hallar <span class="mi"><i>d</i>′<span class="os">∈</span><span class="ro">haz</span><sub><i>O</i>′</sub></span> tal que <span class="mi">(<i>a</i>′<i>b</i>′<i>c</i>′<i>d</i>′)<span class="os">=</span><span class="ou">−</span>1</span>.</li><li><b>c)</b> Verificar que <span class="mi"><i>d</i><span class="os">∩</span><i>d</i>′<span class="os">=</span><i>D</i><span class="os">∈</span><i>e</i></span>.</li><li><b>d)</b> Verificar que <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</li></ul>
+    </div>
+    <div class="clave">
+      <div class="clave-label">🔑 Clave del razonamiento</div>
+      El eje <span class="mi"><i>e</i></span> corta a los dos haces y les deja los mismos puntos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>. Por eso todo el ejercicio se resuelve <b>sobre <span class="mi"><i>e</i></span></b>: se construye el cuarto armónico <span class="mi"><i>D</i></span> con la construcción del apunte, tomando como punto exterior el vértice <span class="mi"><i>O</i></span>, y se une <span class="mi"><i>D</i></span> con cada vértice. Las dos rectas que salen, <span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span> y <span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>, son las pedidas, y c) y d) se justifican con la misma construcción.
+    </div>
+    <div class="ej-grid">
+      <div class="ej-fig-col">
+        <div class="fig" id="fig-pasos" data-figdata='{"vis": {"1": ["hazO", "hazOp", "e", "ejeA", "vert"], "2": ["hazO", "hazOp", "e", "ejeA", "vert"], "3": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q"], "4": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB"], "5": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S"], "6": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K"], "7": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K"], "8": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K"], "9": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K"], "10": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K", "d"], "11": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K", "d", "dp"], "12": ["hazO", "hazOp", "e", "ejeA", "vert", "s", "R", "Q", "RB", "QA", "S", "OS", "D", "K", "d", "dp"]}, "nuevo": {"1": ["ejeA"], "2": ["e"], "3": ["s", "R", "Q"], "4": ["RB"], "5": ["QA", "S"], "6": ["OS", "D", "K"], "7": ["hazO", "OS", "R", "Q", "K"], "8": ["RB", "QA", "OS", "S"], "9": ["ejeA", "D"], "10": ["d"], "11": ["dp"], "12": ["d", "dp", "D"]}}'>
+          <svg viewBox="0 0 580 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Construcción paso a paso del cuarto armónico y de las rectas d y d′">
+<rect width="580" height="560" fill="#FFFDF8"/>
+<defs><pattern id="g5" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="rgba(43,90,147,.05)" stroke-width="1"/></pattern></defs>
+<rect width="580" height="560" fill="url(#g5)"/>
+<g class="fs" data-g="e"><line x1="8.0" y1="302.8" x2="572.0" y2="302.8" stroke="#20201C" stroke-width="2.4"/><text x="568.7" y="294.8" fill="#20201C" text-anchor="end" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">e</text></g>
+<g class="fs" data-g="hazO"><line x1="303.2" y1="8.0" x2="81.6" y2="362.7" stroke="#2B5A93" stroke-width="1.7"/><line x1="236.4" y1="8.0" x2="369.4" y2="362.7" stroke="#2B5A93" stroke-width="1.7"/><line x1="203.1" y1="8.0" x2="513.4" y2="362.7" stroke="#2B5A93" stroke-width="1.7"/><text x="81.6" y="379.7" fill="#2B5A93" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">a</text><text x="369.4" y="379.7" fill="#2B5A93" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">b</text><text x="513.4" y="379.7" fill="#2B5A93" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">c</text></g>
+<g class="fs" data-g="hazOp"><line x1="202.1" y1="552.0" x2="109.5" y2="274.3" stroke="#0d9488" stroke-width="1.7"/><line x1="97.8" y1="552.0" x2="375.5" y2="274.3" stroke="#0d9488" stroke-width="1.7"/><line x1="45.7" y1="552.0" x2="508.5" y2="274.3" stroke="#0d9488" stroke-width="1.7"/><text x="109.5" y="267.3" fill="#0d9488" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">a<tspan font-style="normal">′</tspan></text><text x="375.5" y="267.3" fill="#0d9488" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">b<tspan font-style="normal">′</tspan></text><text x="508.5" y="267.3" fill="#0d9488" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">c<tspan font-style="normal">′</tspan></text></g>
+<g class="fs" data-g="s"><line x1="572.0" y1="358.3" x2="8.0" y2="76.3" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="6 4"/><text x="48.9" y="86.8" fill="#7c3aed" text-anchor="start" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">s</text></g>
+<g class="fs" data-g="RB"><line x1="347.0" y1="302.8" x2="171.1" y2="146.5" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="6 4"/></g>
+<g class="fs" data-g="QA"><line x1="119.0" y1="302.8" x2="350.9" y2="222.1" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="6 4"/></g>
+<g class="fs" data-g="OS"><line x1="253.2" y1="8.0" x2="297.5" y2="362.7" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="6 4"/></g>
+<g class="fs" data-g="d"><line x1="253.2" y1="8.0" x2="297.5" y2="362.7" stroke="#45785A" stroke-width="2.6"/><text x="295.5" y="379.7" fill="#45785A" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">d</text></g>
+<g class="fs" data-g="dp"><line x1="123.9" y1="552.0" x2="309.0" y2="274.3" stroke="#45785A" stroke-width="2.6"/><text x="303.0" y="268.3" fill="#45785A" text-anchor="end" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">d<tspan font-style="normal">′</tspan></text></g>
+<g class="fs" data-g="R"><circle cx="200.4" cy="172.5" r="4.5" fill="#7c3aed"/><text x="189.4" y="166.5" fill="#7c3aed" text-anchor="end" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">R</text></g>
+<g class="fs" data-g="Q"><circle cx="320.7" cy="232.6" r="4.5" fill="#7c3aed"/><text x="330.7" y="226.6" fill="#7c3aed" text-anchor="start" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Q</text></g>
+<g class="fs" data-g="S"><circle cx="282.9" cy="245.8" r="4.5" fill="#7c3aed"/><text x="293.9" y="255.8" fill="#7c3aed" text-anchor="start" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">S</text></g>
+<g class="fs" data-g="K"><circle cx="278.6" cy="211.6" r="4.5" fill="#7c3aed"/><text x="267.6" y="207.6" fill="#7c3aed" text-anchor="end" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">K</text></g>
+<g class="fs" data-g="vert"><circle cx="261.5" cy="74.8" r="4.5" fill="#20201C"/><text x="273.5" y="68.8" fill="#20201C" text-anchor="start" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">O</text><circle cx="176.0" cy="473.8" r="4.5" fill="#20201C"/><text x="188.0" y="487.8" fill="#20201C" text-anchor="start" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">O<tspan font-style="normal">′</tspan></text></g>
+<g class="fs" data-g="ejeA"><circle cx="119.0" cy="302.8" r="4.5" fill="#2B5A93"/><text x="108.0" y="293.8" fill="#20201C" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">A</text><circle cx="347.0" cy="302.8" r="4.5" fill="#2B5A93"/><text x="358.0" y="293.8" fill="#20201C" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">B</text><circle cx="461.0" cy="302.8" r="4.5" fill="#2B5A93"/><text x="472.0" y="293.8" fill="#20201C" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">C</text></g>
+<g class="fs" data-g="D"><circle cx="290.0" cy="302.8" r="5.5" fill="#45785A"/><text x="278.0" y="322.8" fill="#45785A" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="15" font-style="italic" stroke="#FFFDF8" stroke-width="4" stroke-linejoin="round" paint-order="stroke">D</text></g>
+</svg>
+          <div class="fig-nav">
+            <button class="btn-sec" data-action="fig-prev">◀ Paso anterior</button>
+            <span class="fig-cont" id="fig-cont">Paso 1 de 12</span>
+            <button class="btn-sec" data-action="fig-next">Paso siguiente ▶</button>
+          </div>
+          <div class="fig-pasos"><div class="fig-paso" data-n="1"><div class="cap-g">Planteo</div><div class="fig-paso-tit">Paso 1 · ¿Qué relación hay entre los dos haces?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>a</i><span class="pc">,</span><i>b</i><span class="pc">,</span><i>c</i><span class="os">∈</span><span class="ro">haz</span><sub><i>O</i></sub></span>; <span class="mi"><i>a</i>′<span class="pc">,</span><i>b</i>′<span class="pc">,</span><i>c</i>′<span class="os">∈</span><span class="ro">haz</span><sub><i>O</i>′</sub></span>; el eje <span class="mi"><i>e</i></span>; <span class="mi"><i>A</i><span class="os">=</span><i>a</i><span class="os">∩</span><i>e</i></span>, <span class="mi"><i>B</i><span class="os">=</span><i>b</i><span class="os">∩</span><i>e</i></span>, <span class="mi"><i>C</i><span class="os">=</span><i>c</i><span class="os">∩</span><i>e</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la definición de eje de perspectividad: cada recta y su homóloga se cortan sobre <span class="mi"><i>e</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi"><i>a</i>′<span class="os">=</span><i>O</i>′<i>A</i></span>, <span class="mi"><i>b</i>′<span class="os">=</span><i>O</i>′<i>B</i></span>, <span class="mi"><i>c</i>′<span class="os">=</span><i>O</i>′<i>C</i></span>: el eje corta a los dos haces en los mismos puntos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</div></div><div class="fig-paso" data-n="2"><div class="cap-g">Planteo</div><div class="fig-paso-tit">Paso 2 · ¿Dónde conviene leer la condición <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>la condición pedida <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span>, y la recta <span class="mi"><i>e</i></span>, que no pasa por <span class="mi"><i>O</i></span> y ya contiene a <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>leer la razón doble del <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span> sobre la transversal <span class="mi"><i>e</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>: hallar <span class="mi"><i>d</i></span> es hallar el cuarto armónico <span class="mi"><i>D</i></span> de <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, y unirlo con <span class="mi"><i>O</i></span>.</div></div><div class="fig-paso" data-n="3"><div class="cap-g">Construcción de D</div><div class="fig-paso-tit">Paso 3 · ¿Cómo empieza la construcción de <span class="mi"><i>D</i></span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> sobre <span class="mi"><i>e</i></span>, y las rectas <span class="mi"><i>a</i><span class="os">=</span><i>O</i><i>A</i></span> y <span class="mi"><i>b</i><span class="os">=</span><i>O</i><i>B</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar una recta <span class="mi"><i>s</i></span> por <span class="mi"><i>C</i></span>, distinta de <span class="mi"><i>e</i></span> y que no pase por <span class="mi"><i>O</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>los puntos <span class="mi"><i>R</i><span class="os">=</span><i>s</i><span class="os">∩</span><i>a</i></span> y <span class="mi"><i>Q</i><span class="os">=</span><i>s</i><span class="os">∩</span><i>b</i></span>.</div></div><div class="fig-paso" data-n="4"><div class="cap-g">Construcción de D</div><div class="fig-paso-tit">Paso 4 · ¿Cuál es el primer trazo desde <span class="mi"><i>R</i></span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>R</i><span class="os">∈</span><i>a</i></span> y <span class="mi"><i>Q</i><span class="os">∈</span><i>b</i></span>, sobre la recta <span class="mi"><i>s</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>R</i><i>B</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>la recta <span class="mi"><i>R</i><i>B</i></span>, que une el punto de <span class="mi"><i>a</i></span> con <span class="mi"><i>B</i></span>.</div></div><div class="fig-paso" data-n="5"><div class="cap-g">Construcción de D</div><div class="fig-paso-tit">Paso 5 · ¿Dónde aparece el punto <span class="mi"><i>S</i></span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>la recta <span class="mi"><i>R</i><i>B</i></span>, y los puntos <span class="mi"><i>Q</i></span> y <span class="mi"><i>A</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>Q</i><i>A</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>el punto <span class="mi"><i>S</i><span class="os">=</span><i>R</i><i>B</i><span class="os">∩</span><i>Q</i><i>A</i></span>.</div></div><div class="fig-paso" data-n="6"><div class="cap-g">Construcción de D</div><div class="fig-paso-tit">Paso 6 · ¿Dónde aparece el punto <span class="mi"><i>D</i></span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>los puntos <span class="mi"><i>O</i></span> y <span class="mi"><i>S</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>O</i><i>S</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>el punto <span class="mi"><i>D</i><span class="os">=</span><i>O</i><i>S</i><span class="os">∩</span><i>e</i></span>, y también <span class="mi"><i>K</i><span class="os">=</span><i>O</i><i>S</i><span class="os">∩</span><i>s</i></span>, que se usa en los pasos 7 y 8.</div></div><div class="fig-paso" data-n="7"><div class="cap-g">Justificación</div><div class="fig-paso-tit">Paso 7 · ¿Qué da la primera perspectividad?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>los puntos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>D</i></span> de <span class="mi"><i>e</i></span>, y <span class="mi"><i>R</i></span>, <span class="mi"><i>Q</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>K</i></span> de <span class="mi"><i>s</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la perspectividad <span class="mi"><i>p</i><sub>1</sub><span class="os">:</span><i>e</i><span class="os">→</span><i>s</i></span> de centro <span class="mi"><i>O</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>R</i><i>Q</i><i>C</i><i>K</i>)</span>. &nbsp;(1)</div></div><div class="fig-paso" data-n="8"><div class="cap-g">Justificación</div><div class="fig-paso-tit">Paso 8 · ¿Qué da la segunda perspectividad?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>los puntos <span class="mi"><i>R</i></span>, <span class="mi"><i>Q</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>K</i></span> de <span class="mi"><i>s</i></span>, y el punto <span class="mi"><i>S</i></span>, que no está en <span class="mi"><i>e</i></span> ni en <span class="mi"><i>s</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la perspectividad <span class="mi"><i>p</i><sub>2</sub><span class="os">:</span><i>s</i><span class="os">→</span><i>e</i></span> de centro <span class="mi"><i>S</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>R</i><i>Q</i><i>C</i><i>K</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>. &nbsp;(2)</div></div><div class="fig-paso" data-n="9"><div class="cap-g">Justificación</div><div class="fig-paso-tit">Paso 9 · d) ¿Por qué <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>(1) <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>R</i><i>Q</i><i>C</i><i>K</i>)</span> y (2) <span class="mi">(<i>R</i><i>Q</i><i>C</i><i>K</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>comparar <span class="mi">(<i>B</i><i>A</i><i>C</i><i>D</i>)</span> con <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>, usando (1) y (2).</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>: <span class="mi"><i>D</i></span> es el cuarto armónico de <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> (inciso d).</div></div><div class="fig-paso" data-n="10"><div class="cap-g">Los incisos a), b) y c)</div><div class="fig-paso-tit">Paso 10 · a) ¿Cuál es la recta <span class="mi"><i>d</i></span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>D</i></span> con <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>, y <span class="mi"><i>e</i></span>, transversal del <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>tomar <span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span>, que es la recta <span class="mi"><i>O</i><i>S</i></span> ya trazada.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span>, con <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span> (inciso a).</div></div><div class="fig-paso" data-n="11"><div class="cap-g">Los incisos a), b) y c)</div><div class="fig-paso-tit">Paso 11 · b) ¿Cuál es la recta <span class="mi"><i>d</i>′</span>?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>D</i></span> con <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>, y <span class="mi"><i>e</i></span>, que no pasa por <span class="mi"><i>O</i>′</span> y corta a <span class="mi"><i>a</i>′</span>, <span class="mi"><i>b</i>′</span>, <span class="mi"><i>c</i>′</span> en <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>O</i>′<i>D</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>, con <span class="mi">(<i>a</i>′<i>b</i>′<i>c</i>′<i>d</i>′)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span> (inciso b).</div></div><div class="fig-paso" data-n="12"><div class="cap-g">Los incisos a), b) y c)</div><div class="fig-paso-tit">Paso 12 · c) ¿Por qué <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> se cortan sobre el eje?</div><div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span> y <span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>, con <span class="mi"><i>D</i><span class="os">∈</span><i>e</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la perspectividad entre los haces a la recta <span class="mi"><i>d</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>la homóloga de <span class="mi"><i>d</i></span> es <span class="mi"><i>d</i>′</span>, y <span class="mi"><i>d</i><span class="os">∩</span><i>d</i>′<span class="os">=</span><i>D</i><span class="os">∈</span><i>e</i></span> (inciso c).</div></div></div>
+        </div>
+      </div>
+      <div class="ej-steps-col">
+    <h4 class="grp-h">Planteo</h4>
+    <div class="step" data-paso="1">
+      <div class="step-header"><span class="step-badge">PASO 1</span><span class="step-title">¿Qué relación hay entre los dos haces?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>a</i><span class="pc">,</span><i>b</i><span class="pc">,</span><i>c</i><span class="os">∈</span><span class="ro">haz</span><sub><i>O</i></sub></span>; <span class="mi"><i>a</i>′<span class="pc">,</span><i>b</i>′<span class="pc">,</span><i>c</i>′<span class="os">∈</span><span class="ro">haz</span><sub><i>O</i>′</sub></span>; el eje <span class="mi"><i>e</i></span>; <span class="mi"><i>A</i><span class="os">=</span><i>a</i><span class="os">∩</span><i>e</i></span>, <span class="mi"><i>B</i><span class="os">=</span><i>b</i><span class="os">∩</span><i>e</i></span>, <span class="mi"><i>C</i><span class="os">=</span><i>c</i><span class="os">∩</span><i>e</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la definición de eje de perspectividad: cada recta y su homóloga se cortan sobre <span class="mi"><i>e</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi"><i>a</i>′<span class="os">=</span><i>O</i>′<i>A</i></span>, <span class="mi"><i>b</i>′<span class="os">=</span><i>O</i>′<i>B</i></span>, <span class="mi"><i>c</i>′<span class="os">=</span><i>O</i>′<i>C</i></span>: el eje corta a los dos haces en los mismos puntos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</div>
+
+        <div class="prop"><span class="prop-tag">Teorema habilitante</span>En la perspectividad de eje <span class="mi"><i>e</i></span>, a cada recta <span class="mi"><i>x</i></span> del <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span> le corresponde la recta que une <span class="mi"><i>O</i>′</span> con el punto <span class="mi"><i>X</i><span class="os">=</span><i>x</i><span class="os">∩</span><i>e</i></span>.</div>
+        <p>Como <span class="mi"><i>a</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>A</i></span>, la homóloga de <span class="mi"><i>a</i></span> es <span class="mi"><i>a</i>′<span class="os">=</span><i>O</i>′<i>A</i></span>; del mismo modo con <span class="mi"><i>b</i></span> y con <span class="mi"><i>c</i></span>. Entonces el enunciado queda determinado por cinco elementos: <span class="mi"><i>O</i></span>, <span class="mi"><i>O</i>′</span> y los puntos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> del eje.</p>
+        <p>Hipótesis que la construcción necesita: <span class="mi"><i>O</i><span class="os">∉</span><i>e</i></span>, <span class="mi"><i>O</i>′<span class="os">∉</span><i>e</i></span>, <span class="mi"><i>O</i><span class="os">≠</span><i>O</i>′</span>, y <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> distintos (así <span class="mi"><i>a</i></span>, <span class="mi"><i>b</i></span>, <span class="mi"><i>c</i></span> son tres rectas distintas del haz, y lo mismo <span class="mi"><i>a</i>′</span>, <span class="mi"><i>b</i>′</span>, <span class="mi"><i>c</i>′</span>).</p>
+      </div>
+    </div>
+    <div class="step" data-paso="2">
+      <div class="step-header"><span class="step-badge">PASO 2</span><span class="step-title">¿Dónde conviene leer la condición <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>la condición pedida <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span>, y la recta <span class="mi"><i>e</i></span>, que no pasa por <span class="mi"><i>O</i></span> y ya contiene a <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>leer la razón doble del <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span> sobre la transversal <span class="mi"><i>e</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>: hallar <span class="mi"><i>d</i></span> es hallar el cuarto armónico <span class="mi"><i>D</i></span> de <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, y unirlo con <span class="mi"><i>O</i></span>.</div>
+
+        <div class="prop"><span class="prop-tag">Teorema habilitante</span><span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><sub><i>s</i></sub><i>B</i><sub><i>s</i></sub><i>C</i><sub><i>s</i></sub><i>D</i><sub><i>s</i></sub>)</span> para toda recta <span class="mi"><i>s</i></span> que no pase por <span class="mi"><i>O</i></span>.</div>
+        <p>Sobre <span class="mi"><i>e</i></span> ya se conocen tres de los cuatro cortes: <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>. Si <span class="mi"><i>D</i></span> es el punto donde <span class="mi"><i>d</i></span> corta a <span class="mi"><i>e</i></span>, la condición <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1</span> equivale a <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>. Para construir <span class="mi"><i>D</i></span> se usa la construcción del cuarto armónico del apunte, tomando como punto exterior a la recta el propio vértice <span class="mi"><i>O</i></span>: así las dos primeras rectas, <span class="mi"><i>O</i><i>A</i></span> y <span class="mi"><i>O</i><i>B</i></span>, ya están trazadas, porque son <span class="mi"><i>a</i></span> y <span class="mi"><i>b</i></span>.</p>
+      </div>
+    </div>
+    <h4 class="grp-h">Construcción de D</h4>
+    <div class="step" data-paso="3">
+      <div class="step-header"><span class="step-badge">PASO 3</span><span class="step-title">¿Cómo empieza la construcción de <span class="mi"><i>D</i></span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> sobre <span class="mi"><i>e</i></span>, y las rectas <span class="mi"><i>a</i><span class="os">=</span><i>O</i><i>A</i></span> y <span class="mi"><i>b</i><span class="os">=</span><i>O</i><i>B</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar una recta <span class="mi"><i>s</i></span> por <span class="mi"><i>C</i></span>, distinta de <span class="mi"><i>e</i></span> y que no pase por <span class="mi"><i>O</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>los puntos <span class="mi"><i>R</i><span class="os">=</span><i>s</i><span class="os">∩</span><i>a</i></span> y <span class="mi"><i>Q</i><span class="os">=</span><i>s</i><span class="os">∩</span><i>b</i></span>.</div>
+
+        <p>La recta <span class="mi"><i>s</i></span> se elige libremente entre las que pasan por <span class="mi"><i>C</i></span>. Hay que evitar dos: el eje (cortaría a <span class="mi"><i>a</i></span> y a <span class="mi"><i>b</i></span> en <span class="mi"><i>A</i></span> y <span class="mi"><i>B</i></span>, y no aparecería nada nuevo) y la recta <span class="mi"><i>c</i></span> (pasa por <span class="mi"><i>O</i></span>, así que cortaría a <span class="mi"><i>a</i></span> y a <span class="mi"><i>b</i></span> en <span class="mi"><i>O</i></span>). El punto <span class="mi"><i>D</i></span> que sale al final no depende de esta elección: se ve en el paso 9.</p>
+      </div>
+    </div>
+    <div class="step" data-paso="4">
+      <div class="step-header"><span class="step-badge">PASO 4</span><span class="step-title">¿Cuál es el primer trazo desde <span class="mi"><i>R</i></span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>R</i><span class="os">∈</span><i>a</i></span> y <span class="mi"><i>Q</i><span class="os">∈</span><i>b</i></span>, sobre la recta <span class="mi"><i>s</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>R</i><i>B</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>la recta <span class="mi"><i>R</i><i>B</i></span>, que une el punto de <span class="mi"><i>a</i></span> con <span class="mi"><i>B</i></span>.</div>
+
+        <p>Se cruzan los nombres: <span class="mi"><i>R</i></span>, que está sobre <span class="mi"><i>a</i></span>, se une con <span class="mi"><i>B</i></span>. En el paso siguiente <span class="mi"><i>Q</i></span>, que está sobre <span class="mi"><i>b</i></span>, se une con <span class="mi"><i>A</i></span>.</p>
+      </div>
+    </div>
+    <div class="step" data-paso="5">
+      <div class="step-header"><span class="step-badge">PASO 5</span><span class="step-title">¿Dónde aparece el punto <span class="mi"><i>S</i></span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>la recta <span class="mi"><i>R</i><i>B</i></span>, y los puntos <span class="mi"><i>Q</i></span> y <span class="mi"><i>A</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>Q</i><i>A</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>el punto <span class="mi"><i>S</i><span class="os">=</span><i>R</i><i>B</i><span class="os">∩</span><i>Q</i><i>A</i></span>.</div>
+
+        <p>Con <span class="mi"><i>S</i></span> quedan cuatro puntos, <span class="mi"><i>O</i></span>, <span class="mi"><i>R</i></span>, <span class="mi"><i>Q</i></span>, <span class="mi"><i>S</i></span>, tres a tres no alineados. Sus lados opuestos se cortan en <span class="mi"><i>A</i></span> (las rectas <span class="mi"><i>O</i><i>R</i><span class="os">=</span><i>a</i></span> y <span class="mi"><i>Q</i><i>S</i><span class="os">=</span><i>Q</i><i>A</i></span>) y en <span class="mi"><i>B</i></span> (las rectas <span class="mi"><i>O</i><i>Q</i><span class="os">=</span><i>b</i></span> y <span class="mi"><i>R</i><i>S</i><span class="os">=</span><i>R</i><i>B</i></span>).</p>
+      </div>
+    </div>
+    <div class="step" data-paso="6">
+      <div class="step-header"><span class="step-badge">PASO 6</span><span class="step-title">¿Dónde aparece el punto <span class="mi"><i>D</i></span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>los puntos <span class="mi"><i>O</i></span> y <span class="mi"><i>S</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>O</i><i>S</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>el punto <span class="mi"><i>D</i><span class="os">=</span><i>O</i><i>S</i><span class="os">∩</span><i>e</i></span>, y también <span class="mi"><i>K</i><span class="os">=</span><i>O</i><i>S</i><span class="os">∩</span><i>s</i></span>, que se usa en los pasos 7 y 8.</div>
+
+        <p>Si <span class="mi"><i>C</i></span> es el punto medio de <span class="mi"><i>A</i><i>B</i></span>, la recta <span class="mi"><i>O</i><i>S</i></span> sale paralela al eje y <span class="mi"><i>D</i></span> es el punto impropio de <span class="mi"><i>e</i></span>. La construcción no falla: da ese punto impropio.</p>
+      </div>
+    </div>
+    <h4 class="grp-h">Justificación</h4>
+    <div class="step" data-paso="7">
+      <div class="step-header"><span class="step-badge">PASO 7</span><span class="step-title">¿Qué da la primera perspectividad?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>los puntos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>D</i></span> de <span class="mi"><i>e</i></span>, y <span class="mi"><i>R</i></span>, <span class="mi"><i>Q</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>K</i></span> de <span class="mi"><i>s</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la perspectividad <span class="mi"><i>p</i><sub>1</sub><span class="os">:</span><i>e</i><span class="os">→</span><i>s</i></span> de centro <span class="mi"><i>O</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>R</i><i>Q</i><i>C</i><i>K</i>)</span>. &nbsp;(1)</div>
+
+        <div class="prop"><span class="prop-tag">Teorema habilitante</span>Una perspectividad entre dos rectas conserva la razón doble.</div>
+        <p>La perspectividad <span class="mi"><i>p</i><sub>1</sub></span> lleva cada punto <span class="mi"><i>X</i></span> de <span class="mi"><i>e</i></span> al punto <span class="mi"><i>O</i><i>X</i><span class="os">∩</span><i>s</i></span>. Imagen por imagen:</p>
+        <ul>
+          <li><span class="mi"><i>p</i><sub>1</sub>(<i>A</i>)<span class="os">=</span><i>R</i></span>, porque <span class="mi"><i>O</i><i>A</i><span class="os">=</span><i>a</i></span> y <span class="mi"><i>a</i><span class="os">∩</span><i>s</i><span class="os">=</span><i>R</i></span>.</li>
+          <li><span class="mi"><i>p</i><sub>1</sub>(<i>B</i>)<span class="os">=</span><i>Q</i></span>, porque <span class="mi"><i>O</i><i>B</i><span class="os">=</span><i>b</i></span> y <span class="mi"><i>b</i><span class="os">∩</span><i>s</i><span class="os">=</span><i>Q</i></span>.</li>
+          <li><span class="mi"><i>p</i><sub>1</sub>(<i>C</i>)<span class="os">=</span><i>C</i></span>, porque <span class="mi"><i>C</i></span> está en <span class="mi"><i>e</i></span> y en <span class="mi"><i>s</i></span>.</li>
+          <li><span class="mi"><i>p</i><sub>1</sub>(<i>D</i>)<span class="os">=</span><i>K</i></span>, porque <span class="mi"><i>O</i><i>D</i><span class="os">=</span><i>O</i><i>S</i></span> y <span class="mi"><i>O</i><i>S</i><span class="os">∩</span><i>s</i><span class="os">=</span><i>K</i></span>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step" data-paso="8">
+      <div class="step-header"><span class="step-badge">PASO 8</span><span class="step-title">¿Qué da la segunda perspectividad?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>los puntos <span class="mi"><i>R</i></span>, <span class="mi"><i>Q</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>K</i></span> de <span class="mi"><i>s</i></span>, y el punto <span class="mi"><i>S</i></span>, que no está en <span class="mi"><i>e</i></span> ni en <span class="mi"><i>s</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la perspectividad <span class="mi"><i>p</i><sub>2</sub><span class="os">:</span><i>s</i><span class="os">→</span><i>e</i></span> de centro <span class="mi"><i>S</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>R</i><i>Q</i><i>C</i><i>K</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>. &nbsp;(2)</div>
+
+        <p>La perspectividad <span class="mi"><i>p</i><sub>2</sub></span> lleva cada punto <span class="mi"><i>X</i></span> de <span class="mi"><i>s</i></span> al punto <span class="mi"><i>S</i><i>X</i><span class="os">∩</span><i>e</i></span>. Imagen por imagen:</p>
+        <ul>
+          <li><span class="mi"><i>p</i><sub>2</sub>(<i>R</i>)<span class="os">=</span><i>B</i></span>, porque <span class="mi"><i>S</i><i>R</i><span class="os">=</span><i>R</i><i>B</i></span> y <span class="mi"><i>R</i><i>B</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>B</i></span>.</li>
+          <li><span class="mi"><i>p</i><sub>2</sub>(<i>Q</i>)<span class="os">=</span><i>A</i></span>, porque <span class="mi"><i>S</i><i>Q</i><span class="os">=</span><i>Q</i><i>A</i></span> y <span class="mi"><i>Q</i><i>A</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>A</i></span>.</li>
+          <li><span class="mi"><i>p</i><sub>2</sub>(<i>C</i>)<span class="os">=</span><i>C</i></span>, porque <span class="mi"><i>C</i></span> está en <span class="mi"><i>s</i></span> y en <span class="mi"><i>e</i></span>.</li>
+          <li><span class="mi"><i>p</i><sub>2</sub>(<i>K</i>)<span class="os">=</span><i>D</i></span>, porque <span class="mi"><i>S</i><i>K</i><span class="os">=</span><i>O</i><i>S</i></span> y <span class="mi"><i>O</i><i>S</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>D</i></span>.</li>
+        </ul>
+        <p>Las dos perspectividades intercambian <span class="mi"><i>A</i></span> con <span class="mi"><i>B</i></span>: la primera manda <span class="mi"><i>A</i></span> a <span class="mi"><i>R</i></span>, y la segunda manda <span class="mi"><i>R</i></span> a <span class="mi"><i>B</i></span>.</p>
+      </div>
+    </div>
+    <div class="step" data-paso="9">
+      <div class="step-header"><span class="step-badge">PASO 9</span><span class="step-title">d) ¿Por qué <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span>(1) <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>R</i><i>Q</i><i>C</i><i>K</i>)</span> y (2) <span class="mi">(<i>R</i><i>Q</i><i>C</i><i>K</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>comparar <span class="mi">(<i>B</i><i>A</i><i>C</i><i>D</i>)</span> con <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>, usando (1) y (2).</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>: <span class="mi"><i>D</i></span> es el cuarto armónico de <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> (inciso d).</div>
+
+        <p>De (1) y (2), <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>. Por la definición, intercambiar los dos primeros puntos invierte la razón doble: si <span class="mi"><i>ρ</i><span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>, entonces <span class="mi">(<i>B</i><i>A</i><i>C</i><i>D</i>)<span class="os">=</span><span class="fr"><span class="fn">1</span><span class="fd"><i>ρ</i></span></span></span>.</p>
+        <p>Luego <span class="mi"><i>ρ</i><span class="os">=</span><span class="fr"><span class="fn">1</span><span class="fd"><i>ρ</i></span></span></span>, o sea <span class="mi"><i>ρ</i><sup>2</sup><span class="os">=</span>1</span>, y <span class="mi"><i>ρ</i><span class="os">=</span>1</span> o <span class="mi"><i>ρ</i><span class="os">=</span><span class="ou">−</span>1</span>. El valor <span class="mi">1</span> se descarta: <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>1</span> obligaría a que <span class="mi"><i>D</i></span> coincida con <span class="mi"><i>C</i></span>, y los puntos son distintos. Por lo tanto <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</p>
+        <p>La razón doble quedó determinada sin usar la recta <span class="mi"><i>s</i></span> elegida: con cualquier otra <span class="mi"><i>s</i></span> por <span class="mi"><i>C</i></span> se llega al mismo <span class="mi"><i>D</i></span>, porque el cuarto armónico es único. Además, <span class="mi"><i>C</i></span> y <span class="mi"><i>D</i></span> se separan respecto de <span class="mi"><i>A</i></span> y <span class="mi"><i>B</i></span>: uno queda entre <span class="mi"><i>A</i></span> y <span class="mi"><i>B</i></span>, el otro afuera.</p>
+      </div>
+    </div>
+    <h4 class="grp-h">Los incisos a), b) y c)</h4>
+    <div class="step" data-paso="10">
+      <div class="step-header"><span class="step-badge">PASO 10</span><span class="step-title">a) ¿Cuál es la recta <span class="mi"><i>d</i></span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>D</i></span> con <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>, y <span class="mi"><i>e</i></span>, transversal del <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>tomar <span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span>, que es la recta <span class="mi"><i>O</i><i>S</i></span> ya trazada.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span>, con <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span> (inciso a).</div>
+
+        <p>Las rectas <span class="mi"><i>a</i></span>, <span class="mi"><i>b</i></span>, <span class="mi"><i>c</i></span>, <span class="mi"><i>d</i></span> cortan a <span class="mi"><i>e</i></span> en <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, <span class="mi"><i>D</i></span>, y <span class="mi"><i>e</i></span> no pasa por <span class="mi"><i>O</i></span>. Por el teorema del paso 2, <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>. Como <span class="mi"><i>D</i></span> es único, <span class="mi"><i>d</i></span> también lo es.</p>
+      </div>
+    </div>
+    <div class="step" data-paso="11">
+      <div class="step-header"><span class="step-badge">PASO 11</span><span class="step-title">b) ¿Cuál es la recta <span class="mi"><i>d</i>′</span>?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>D</i></span> con <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>, y <span class="mi"><i>e</i></span>, que no pasa por <span class="mi"><i>O</i>′</span> y corta a <span class="mi"><i>a</i>′</span>, <span class="mi"><i>b</i>′</span>, <span class="mi"><i>c</i>′</span> en <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>trazar la recta <span class="mi"><i>O</i>′<i>D</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span><span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>, con <span class="mi">(<i>a</i>′<i>b</i>′<i>c</i>′<i>d</i>′)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span> (inciso b).</div>
+
+        <div class="prop"><span class="prop-tag">Teorema habilitante</span><span class="mi">(<i>a</i>′<i>b</i>′<i>c</i>′<i>d</i>′)<span class="os">=</span>(<i>A</i><sub><i>s</i></sub><i>B</i><sub><i>s</i></sub><i>C</i><sub><i>s</i></sub><i>D</i><sub><i>s</i></sub>)</span> para toda recta <span class="mi"><i>s</i></span> que no pase por <span class="mi"><i>O</i>′</span>.</div>
+        <p>El eje es transversal del <span class="mi"><span class="ro">haz</span><sub><i>O</i>′</sub></span> y le deja los mismos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> (paso 1). Entonces <span class="mi">(<i>a</i>′<i>b</i>′<i>c</i>′<i>d</i>′)<span class="os">=</span><span class="ou">−</span>1</span> pide que <span class="mi"><i>d</i>′</span> corte a <span class="mi"><i>e</i></span> en el cuarto armónico de <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, que es <span class="mi"><i>D</i></span>. Si se repitiera la construcción tomando <span class="mi"><i>O</i>′</span> como punto exterior, se llegaría al mismo <span class="mi"><i>D</i></span>.</p>
+      </div>
+    </div>
+    <div class="step" data-paso="12">
+      <div class="step-header"><span class="step-badge">PASO 12</span><span class="step-title">c) ¿Por qué <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> se cortan sobre el eje?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="tho"><div class="tho-r"><span class="tho-l">Tenemos</span><span><span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>D</i></span> y <span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>, con <span class="mi"><i>D</i><span class="os">∈</span><i>e</i></span>.</span></div><div class="tho-r"><span class="tho-l">Hacemos</span><span>aplicar la perspectividad entre los haces a la recta <span class="mi"><i>d</i></span>.</span></div></div><div class="calc-final"><span class="tho-l">Obtenemos</span>la homóloga de <span class="mi"><i>d</i></span> es <span class="mi"><i>d</i>′</span>, y <span class="mi"><i>d</i><span class="os">∩</span><i>d</i>′<span class="os">=</span><i>D</i><span class="os">∈</span><i>e</i></span> (inciso c).</div>
+
+        <p>La homóloga de <span class="mi"><i>d</i></span> es la recta que une <span class="mi"><i>O</i>′</span> con <span class="mi"><i>d</i><span class="os">∩</span><i>e</i><span class="os">=</span><i>D</i></span>, o sea <span class="mi"><i>d</i>′</span>: las dos cuartas armónicas son rectas homólogas, y por eso se cortan sobre el eje. Es lo esperable, porque la perspectividad conserva la razón doble. Si <span class="mi"><i>D</i></span> cayera sobre la recta <span class="mi"><i>O</i><i>O</i>′</span>, <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> coincidirían con <span class="mi"><i>O</i><i>O</i>′</span>.</p>
+      </div>
+    </div>
+    <h4 class="grp-h">Para profundizar</h4>
+    <div class="step">
+      <div class="step-header"><span class="step-badge">+</span><span class="step-title">¿Cómo se comprueban <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> con otra transversal?</span><span class="chev">▾</span></div>
+      <div class="step-body">
+        <div class="prop"><span class="prop-tag">Propiedad habilitante</span>Si <span class="mi"><i>t</i><span class="os">∥</span><i>c</i></span>, la recta <span class="mi"><i>t</i></span> corta a <span class="mi"><i>c</i></span> en su punto impropio, y <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span><span class="ou">−</span>1<span class="os">⟺</span></span> el corte de <span class="mi"><i>d</i></span> con <span class="mi"><i>t</i></span> es el punto medio de los cortes de <span class="mi"><i>a</i></span> y <span class="mi"><i>b</i></span>.</div>
+        <ol>
+          <li>Trazar <span class="mi"><i>t</i><span class="os">∥</span><i>c</i></span>, que no pase por <span class="mi"><i>O</i></span>, y marcar <span class="mi"><i>M</i><span class="os">=</span><i>a</i><span class="os">∩</span><i>t</i></span> y <span class="mi"><i>N</i><span class="os">=</span><i>b</i><span class="os">∩</span><i>t</i></span>.</li>
+          <li>El punto medio de <span class="mi"><i>M</i><i>N</i></span> tiene que caer sobre <span class="mi"><i>d</i></span>.</li>
+          <li>Lo mismo en el otro haz: con <span class="mi"><i>t</i>′<span class="os">∥</span><i>c</i>′</span>, el punto medio de <span class="mi"><i>M</i>′<i>N</i>′</span> tiene que caer sobre <span class="mi"><i>d</i>′</span>.</li>
+        </ol>
+        <p>Esta comprobación no usa el eje ni la construcción de <span class="mi"><i>D</i></span>: si el punto medio cae fuera de <span class="mi"><i>d</i></span>, hay un error en la construcción. En el laboratorio se activa con «Comprobación con <span class="mi"><i>t</i></span> y <span class="mi"><i>t</i>′</span>».</p>
+      </div>
+    </div>
+      </div>
+    </div>
+    
+    <div class="ans-box">
+      <div class="ans-header"><span class="ans-label">✓ Ver respuesta final y análisis de soluciones</span><span class="chev">▾</span></div>
+      <div class="ans-content">
+        <p><b>a)</b> Con <span class="mi"><i>s</i></span> por <span class="mi"><i>C</i></span>, <span class="mi"><i>R</i><span class="os">=</span><i>s</i><span class="os">∩</span><i>a</i></span>, <span class="mi"><i>Q</i><span class="os">=</span><i>s</i><span class="os">∩</span><i>b</i></span> y <span class="mi"><i>S</i><span class="os">=</span><i>R</i><i>B</i><span class="os">∩</span><i>Q</i><i>A</i></span>: <span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>S</i></span>, que corta a <span class="mi"><i>e</i></span> en <span class="mi"><i>D</i></span>. Como <span class="mi"><i>e</i></span> es transversal del haz, <span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</p>
+        <p><b>b)</b> <span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>, porque <span class="mi"><i>e</i></span> también es transversal del <span class="mi"><span class="ro">haz</span><sub><i>O</i>′</sub></span> y le deja los mismos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</p>
+        <p><b>c)</b> <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> pasan por <span class="mi"><i>D</i><span class="os">∈</span><i>e</i></span>; son rectas homólogas de la perspectividad.</p>
+        <p><b>d)</b> Con <span class="mi"><i>p</i><sub>1</sub><span class="os">:</span><i>e</i><span class="os">→</span><i>s</i></span> de centro <span class="mi"><i>O</i></span> y <span class="mi"><i>p</i><sub>2</sub><span class="os">:</span><i>s</i><span class="os">→</span><i>e</i></span> de centro <span class="mi"><i>S</i></span>: <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>R</i><i>Q</i><i>C</i><i>K</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>, de donde <span class="mi"><i>ρ</i><span class="os">=</span><span class="fr"><span class="fn">1</span><span class="fd"><i>ρ</i></span></span></span> y, como <span class="mi"><i>D</i><span class="os">≠</span><i>C</i></span>, <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</p>
+        <p><b>Cantidad de soluciones:</b> dados <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span> distintos, el cuarto armónico <span class="mi"><i>D</i></span> es <b>único</b>, y con él <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span>. Si <span class="mi"><i>C</i></span> es el punto medio de <span class="mi"><i>A</i><i>B</i></span>, la recta <span class="mi"><i>O</i><i>S</i></span> sale paralela a <span class="mi"><i>e</i></span>: <span class="mi"><i>D</i></span> es el punto impropio de <span class="mi"><i>e</i></span>, <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> son paralelas a <span class="mi"><i>e</i></span> y se cortan en ese punto impropio, que pertenece a <span class="mi"><i>e</i></span>. Si <span class="mi"><i>D</i></span> cae sobre <span class="mi"><i>O</i><i>O</i>′</span>, <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> coinciden con <span class="mi"><i>O</i><i>O</i>′</span>. Si <span class="mi"><i>C</i></span> coincidiera con <span class="mi"><i>A</i></span> o con <span class="mi"><i>B</i></span>, la cuaterna degenera y no hay cuarto armónico.</p>
+      </div>
+    </div>
+    
+    <div class="errtip">
+      <div class="err-label">⚠ Error típico</div>
+      Tomar como <span class="mi"><i>D</i></span> el punto medio de <span class="mi"><i>A</i><i>B</i></span>. El punto medio es el conjugado armónico del punto impropio de <span class="mi"><i>e</i></span>, no de <span class="mi"><i>C</i></span>: sólo sería <span class="mi"><i>D</i></span> si <span class="mi"><i>C</i></span> estuviera en el infinito. Segundo clásico: trazar <span class="mi"><i>s</i></span> por <span class="mi"><i>O</i></span> (es la recta <span class="mi"><i>c</i></span>) o tomar <span class="mi"><i>s</i><span class="os">=</span><i>e</i></span>; con esas elecciones <span class="mi"><i>R</i></span> y <span class="mi"><i>Q</i></span> no son puntos nuevos y la construcción no da nada.
+    </div>
+    
+    <div class="mini-test">
+      <h4>🧠 Mini-test E5</h4>
+      
+      <div class="mt-item">
+        <p class="mt-q"><b>1.</b> Un compañero dice: «<span class="mi"><i>D</i></span> es el cuarto armónico de <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>, así que es el punto medio de <span class="mi"><i>A</i><i>B</i></span>». ¿Tiene razón?</p>
+        <ul class="opts" data-test="t2" data-correct="1"><li><button class="opt" data-i="0">Sí: el cuarto armónico siempre es el punto medio de <span class="mi"><i>A</i><i>B</i></span>.</button></li><li><button class="opt" data-i="1">Sólo si <span class="mi"><i>C</i></span> es el punto impropio de <span class="mi"><i>e</i></span>.</button></li><li><button class="opt" data-i="2">Sólo si <span class="mi"><i>C</i></span> está fuera del segmento <span class="mi"><i>A</i><i>B</i></span>.</button></li></ul>
+        <div class="test-fb" data-fb="t2"></div>
+      </div>
+      
+      <div class="mt-item">
+        <p class="mt-q"><b>2.</b> Un alumno escribe: «<span class="mi"><i>p</i><sub>2</sub><span class="os">:</span><i>s</i><span class="os">→</span><i>e</i></span> de centro <span class="mi"><i>S</i></span>: <span class="mi"><i>p</i><sub>2</sub>(<i>R</i>)<span class="os">=</span><i>A</i></span>, <span class="mi"><i>p</i><sub>2</sub>(<i>Q</i>)<span class="os">=</span><i>B</i></span>, <span class="mi"><i>p</i><sub>2</sub>(<i>C</i>)<span class="os">=</span><i>C</i></span>, <span class="mi"><i>p</i><sub>2</sub>(<i>K</i>)<span class="os">=</span><i>D</i></span>. Entonces <span class="mi">(<i>R</i><i>Q</i><i>C</i><i>K</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>». ¿Dónde está el error?</p>
+        <ul class="opts" data-test="t3" data-correct="0"><li><button class="opt" data-i="0">En <span class="mi"><i>p</i><sub>2</sub>(<i>R</i>)</span>: tiene que ser <span class="mi"><i>B</i></span>, porque <span class="mi"><i>S</i><i>R</i><span class="os">=</span><i>R</i><i>B</i></span>; y <span class="mi"><i>p</i><sub>2</sub>(<i>Q</i>)<span class="os">=</span><i>A</i></span>, porque <span class="mi"><i>S</i><i>Q</i><span class="os">=</span><i>Q</i><i>A</i></span>.</button></li><li><button class="opt" data-i="1">En el centro: la perspectividad de <span class="mi"><i>s</i></span> a <span class="mi"><i>e</i></span> tiene que tener centro <span class="mi"><i>O</i></span>.</button></li><li><button class="opt" data-i="2">En <span class="mi"><i>p</i><sub>2</sub>(<i>C</i>)</span>: <span class="mi"><i>C</i></span> no tiene imagen, porque está en las dos rectas.</button></li></ul>
+        <div class="test-fb" data-fb="t3"></div>
+      </div>
+      
+      <div class="mt-item">
+        <p class="mt-q"><b>3.</b> En el paso 3, ¿qué pasa si se elige como <span class="mi"><i>s</i></span> la recta <span class="mi"><i>c</i></span>?</p>
+        <ul class="opts" data-test="t4" data-correct="1"><li><button class="opt" data-i="0">Se obtiene el mismo <span class="mi"><i>D</i></span>, porque <span class="mi"><i>D</i></span> no depende de <span class="mi"><i>s</i></span>.</button></li><li><button class="opt" data-i="1"><span class="mi"><i>R</i></span> y <span class="mi"><i>Q</i></span> coinciden con <span class="mi"><i>O</i></span>, no hay punto <span class="mi"><i>S</i></span> y la construcción no da nada.</button></li><li><button class="opt" data-i="2"><span class="mi"><i>D</i></span> coincide con <span class="mi"><i>C</i></span>.</button></li></ul>
+        <div class="test-fb" data-fb="t4"></div>
+      </div>
+      
+      <div class="mt-item">
+        <p class="mt-q"><b>4.</b> Movemos <span class="mi"><i>C</i></span> sobre el eje hasta que queda exactamente en el punto medio de <span class="mi"><i>A</i><i>B</i></span>. ¿Qué pasa con <span class="mi"><i>d</i></span>, <span class="mi"><i>d</i>′</span> y <span class="mi"><i>D</i></span>?</p>
+        <ul class="opts" data-test="t1" data-correct="2"><li><button class="opt" data-i="0"><span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> coinciden con <span class="mi"><i>c</i></span> y <span class="mi"><i>c</i>′</span>, porque <span class="mi"><i>C</i></span> ya es «el del medio».</button></li><li><button class="opt" data-i="1">No existe <span class="mi"><i>d</i></span>: la construcción falla y el ejercicio no tiene solución.</button></li><li><button class="opt" data-i="2"><span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> son paralelas a <span class="mi"><i>e</i></span>, y se cortan en el punto impropio de <span class="mi"><i>e</i></span>: <span class="mi"><i>D</i><span class="os">=</span><i>D</i><sub>∞</sub></span>.</button></li></ul>
+        <div class="test-fb" data-fb="t1"></div>
+      </div>
+    </div>
+    
+    <div class="fig" id="lab-fig">
+      <div class="fig-title">🧪 Laboratorio: arrastrá <span class="mi"><i>O</i></span>, <span class="mi"><i>O</i>′</span>, <span class="mi"><i>C</i></span> o la manija de <span class="mi"><i>s</i></span></div>
+      <canvas id="cv-lab" width="580" height="560" tabindex="0" aria-label="Laboratorio: haces perspectivos y cuarta armónica"></canvas>
+      <div class="fig-ctrl">
+        <label><input type="checkbox" class="tgl-lab" data-k="cuad" checked> <span>Construcción <span class="mi"><i>s</i><span class="pc">,</span><i>R</i><span class="pc">,</span><i>Q</i><span class="pc">,</span><i>S</i></span></span></label>
+        <label><input type="checkbox" class="tgl-lab" data-k="sol" checked> <span>Rectas <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span></span></label>
+        <label><input type="checkbox" class="tgl-lab" data-k="trans"> <span>Comprobación con <span class="mi"><i>t</i></span> y <span class="mi"><i>t</i>′</span></span></label>
+        <button class="btn-sec" data-action="reset-lab">Volver al dibujo inicial</button>
+      </div>
+      <div class="lab-panel">
+        <div class="lab-dato"><span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)</span><b id="lv-r">—</b></div>
+        <div class="lab-dato">punto medio de <span class="mi"><i>M</i><i>N</i></span> respecto de <span class="mi"><i>d</i></span><b id="lv-h1">—</b></div>
+        <div class="lab-dato">punto medio de <span class="mi"><i>M</i>′<i>N</i>′</span> respecto de <span class="mi"><i>d</i>′</span><b id="lv-h2">—</b></div>
+        <div class="lab-aviso" id="lv-aviso"></div>
+      </div>
+      <div class="fig-leg"><span>Antes de girar <span class="mi"><i>s</i></span> alrededor de <span class="mi"><i>C</i></span>, anotá: ¿<span class="mi"><i>D</i></span> se va a mover? Después probalo. Mové <span class="mi"><i>C</i></span> y mirá qué hacen <span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span>. Con el teclado: flechas mueven <span class="mi"><i>C</i></span>.</span></div>
+    </div>
+  </div>
+</section>
+<section class="tab-content" data-tab="resumen">
+  <div class="tema-intro">
+    <h2 class="tema-title">Resumen: <em>una cuaterna, tres lugares</em></h2>
+    <p class="tema-desc">Qué idea se lleva cada inciso del ejercicio 5.</p>
+  </div>
+  <div class="sum-grid">
+    <div class="sum-card"><div class="ic">📐</div><h4>Datos</h4><p>Con eje <span class="mi"><i>e</i></span>: <span class="mi"><i>a</i>′<span class="os">=</span><i>O</i>′<i>A</i></span>, <span class="mi"><i>b</i>′<span class="os">=</span><i>O</i>′<i>B</i></span>, <span class="mi"><i>c</i>′<span class="os">=</span><i>O</i>′<i>C</i></span>. El eje corta a los dos haces en los mismos <span class="mi"><i>A</i></span>, <span class="mi"><i>B</i></span>, <span class="mi"><i>C</i></span>.</p></div>
+    <div class="sum-card"><div class="ic">✂️</div><h4>a) Cuarto armónico</h4><p><span class="mi">(<i>a</i><i>b</i><i>c</i><i>d</i>)<span class="os">=</span>(<i>A</i><i>B</i><i>C</i><i>D</i>)</span>: con <span class="mi"><i>s</i></span> por <span class="mi"><i>C</i></span>, <span class="mi"><i>R</i></span>, <span class="mi"><i>Q</i></span> y <span class="mi"><i>S</i><span class="os">=</span><i>R</i><i>B</i><span class="os">∩</span><i>Q</i><i>A</i></span>, la recta <span class="mi"><i>d</i><span class="os">=</span><i>O</i><i>S</i></span> corta a <span class="mi"><i>e</i></span> en <span class="mi"><i>D</i></span>.</p></div>
+    <div class="sum-card"><div class="ic">🔁</div><h4>b) El otro haz</h4><p><span class="mi"><i>e</i></span> también es transversal del <span class="mi"><span class="ro">haz</span><sub><i>O</i>′</sub></span>: el mismo <span class="mi"><i>D</i></span> sirve, y <span class="mi"><i>d</i>′<span class="os">=</span><i>O</i>′<i>D</i></span>.</p></div>
+    <div class="sum-card"><div class="ic">📍</div><h4>c) Corte sobre el eje</h4><p><span class="mi"><i>d</i></span> y <span class="mi"><i>d</i>′</span> pasan por <span class="mi"><i>D</i><span class="os">∈</span><i>e</i></span>: son rectas homólogas de la perspectividad.</p></div>
+    <div class="sum-card"><div class="ic">⚖️</div><h4>d) Puntos del eje</h4><p>Dos perspectividades, de centros <span class="mi"><i>O</i></span> y <span class="mi"><i>S</i></span>, dan <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span>(<i>B</i><i>A</i><i>C</i><i>D</i>)</span>; de ahí <span class="mi">(<i>A</i><i>B</i><i>C</i><i>D</i>)<span class="os">=</span><span class="ou">−</span>1</span>.</p></div>
+    <div class="sum-card"><div class="ic">♾</div><h4>Caso límite</h4><p>Si <span class="mi"><i>C</i></span> es el punto medio de <span class="mi"><i>A</i><i>B</i></span>, <span class="mi"><i>O</i><i>S</i><span class="os">∥</span><i>e</i></span>, <span class="mi"><i>D</i></span> es impropio y <span class="mi"><i>d</i><span class="os">∥</span><i>d</i>′<span class="os">∥</span><i>e</i></span>.</p></div>
+  </div>
+  <h3 class="section-h">🧭 Estrategia general para este tipo de ejercicio</h3>
+  <p>Para imponer una razón doble en un haz, buscar la transversal en la que ya se conocen tres cortes: ahí el problema pasa a ser de cuatro puntos sobre una recta. En dos haces perspectivos esa transversal es el eje, porque es común a los dos. El cuarto armónico se construye con regla con la construcción del apunte, y se justifica con dos perspectividades que intercambian <span class="mi"><i>A</i></span> y <span class="mi"><i>B</i></span>. La construcción se comprueba con otra transversal: una paralela a <span class="mi"><i>c</i></span> convierte el <span class="mi"><span class="ou">−</span>1</span> en un punto medio.</p>
+  <div class="clave">
+    <div class="clave-label">🎓 Para llevarse</div>
+    La cuaterna armónica no es una propiedad de un dibujo sino de cuatro elementos: se ve igual en el <span class="mi"><span class="ro">haz</span><sub><i>O</i></sub></span>, en el <span class="mi"><span class="ro">haz</span><sub><i>O</i>′</sub></span> y sobre el eje, porque las perspectividades la transportan sin alterarla.
+  </div>
+  <p style="margin-top:18px"><button class="btn-print" data-action="print">🖨 Imprimir / guardar PDF</button></p>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-quote">"La matemática no exige genios, exige constancia."</div>
+    <div class="footer-coaut">Prof. Ariel Cardozo &nbsp;·&nbsp; Prof. Analía Chaparro</div>
+    <div class="footer-lab">
+      <div class="lab-name"><span class="bullet"></span><span class="lab">laboratorio</span><span class="best">best</span><span class="ia">-IA</span></div>
+      <div class="lab-sub">Prof. Ariel L. Cardozo Delgado</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============ Pestañas ============ */
+  function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+    document.querySelectorAll('.tab-content').forEach(function (sec) {
+      sec.classList.toggle('active', sec.dataset.tab === tabName);
+    });
+    var main = document.getElementById('main-content');
+    if (main) main.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if (tabName === 'e5') requestAnimationFrame(drawLab);
+  }
+  window.switchTab = switchTab;
+
+  var FB = {
+    t2: {
+      0: '✗ No en general: el punto medio de AB es el conjugado armónico del punto impropio de e. Si C no está en el infinito, su cuarto armónico es otro punto.',
+      1: '✓ Correcto. El punto medio de AB y el punto impropio de e son conjugados armónicos respecto de A y B. Sólo cuando C es ese punto impropio, D es el punto medio.',
+      2: '✗ Que C esté fuera de AB sólo dice que D queda adentro; no dice dónde. En la figura C está fuera de AB y D no es el punto medio.'
+    },
+    t3: {
+      0: '✓ Correcto. La perspectividad de centro S lleva cada punto X de s al punto SX ∩ e. Como S está en RB, SR es la recta RB, que corta a e en B. Con el error se llega a (ABCD) = (ABCD), que no prueba nada.',
+      1: '✗ Con centro O se volvería a la primera perspectividad y no se obtendría nada nuevo. La segunda tiene centro S justamente para intercambiar A y B.',
+      2: '✗ C sí tiene imagen: está en s y en e, así que SC ∩ e = C. Es el punto que las dos perspectividades dejan fijo.'
+    },
+    t4: {
+      0: '✗ D no depende de s mientras la construcción se pueda hacer. Con s = c no se puede: R y Q no son puntos nuevos.',
+      1: '✓ Correcto. La recta c pasa por O, así que corta a a y a b en O: R = Q = O, las rectas RB y QA son b y a, y su corte vuelve a ser O. Por eso s no puede pasar por O.',
+      2: '✗ No se llega a ningún D: con s = c, R y Q coinciden con O y no hay punto S.'
+    },
+    t1: {
+      0: '✗ Si d coincidiera con c, la razón doble (abcc) valdría 1, no −1. La cuarta armónica nunca coincide con c.',
+      1: '✗ La construcción no falla: la recta OS sale paralela al eje, así que D es el punto impropio de e y d es la paralela a e por O. Probalo en el laboratorio llevando C a x = −1.',
+      2: '✓ Correcto. Si C es el punto medio de AB, su conjugado armónico respecto de A y B es el punto impropio de e. Entonces d y d′ son paralelas a e y se cortan en ese punto impropio, que pertenece a e: el inciso c) sigue valiendo en el plano proyectivo. Lo podés ver en el laboratorio llevando C a x = −1.'
+    }
+  };
+
+  /* ============ Delegación de eventos ============ */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.tab-btn');
+    if (btn && btn.dataset.tab) { switchTab(btn.dataset.tab); return; }
+
+    var head = e.target.closest('.step-header, .ans-header');
+    if (head) {
+      var box = head.closest('.step, .ans-box');
+      var opening = !box.classList.contains('open');
+      box.classList.toggle('open');
+      if (opening && box.dataset.paso) setFig(parseInt(box.dataset.paso, 10), true);
+      if (opening) requestAnimationFrame(function () {
+        if (box.getBoundingClientRect().top < 70) box.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
+      return;
+    }
+
+    var opt = e.target.closest('.opt');
+    if (opt) {
+      var ul = opt.closest('.opts'), id = ul.dataset.test;
+      var ok = parseInt(ul.dataset.correct, 10), sel = parseInt(opt.dataset.i, 10);
+      ul.querySelectorAll('.opt').forEach(function (b) {
+        var i = parseInt(b.dataset.i, 10);
+        b.disabled = true; b.classList.remove('ok', 'bad');
+        if (i === ok) b.classList.add('ok');
+        if (i === sel && sel !== ok) b.classList.add('bad');
+      });
+      var fb = document.querySelector('[data-fb="' + id + '"]');
+      if (fb) { fb.className = 'test-fb show ' + (sel === ok ? 'ok' : 'bad'); fb.textContent = FB[id][sel]; }
+      return;
+    }
+
+    if (e.target.closest('[data-action="print"]')) { window.print(); return; }
+    if (e.target.closest('[data-action="reset-lab"]')) { resetLab(); return; }
+    if (e.target.closest('[data-action="fig-prev"]')) { setFig(FIGN - 1, false); return; }
+    if (e.target.closest('[data-action="fig-next"]')) { setFig(FIGN + 1, false); return; }
+  });
+
+  document.addEventListener('change', function (e) {
+    var t = e.target.closest('.tgl');
+    if (t && t.dataset.target) {
+      var g = document.getElementById(t.dataset.target);
+      if (g) g.style.opacity = t.checked ? '1' : '0';
+      return;
+    }
+    var l = e.target.closest('.tgl-lab');
+    if (l) { VIS[l.dataset.k] = l.checked; drawLab(); }
+  });
+
+  /* ============ Figura por pasos, sincronizada con el texto ============ */
+  var FIGN = 1, FIGDATA = null, FIGTOT = 0;
+  function setFig(n, desdeTexto) {
+    var fig = document.getElementById('fig-pasos'); if (!fig) return;
+    if (!FIGDATA) { FIGDATA = JSON.parse(fig.dataset.figdata); FIGTOT = Object.keys(FIGDATA.vis).length; }
+    n = Math.max(1, Math.min(FIGTOT, n)); FIGN = n;
+    var vis = FIGDATA.vis[n] || [], nuevo = FIGDATA.nuevo[n] || [];
+    fig.querySelectorAll('.fs').forEach(function (g) {
+      var k = g.getAttribute('data-g');
+      g.classList.toggle('on', vis.indexOf(k) >= 0);
+      g.classList.toggle('nuevo', nuevo.indexOf(k) >= 0);
+    });
+    fig.querySelectorAll('.fig-paso').forEach(function (p) { p.classList.toggle('on', p.dataset.n === String(n)); });
+    var cont = document.getElementById('fig-cont'); if (cont) cont.textContent = 'Paso ' + n + ' de ' + FIGTOT;
+    var bp = fig.querySelector('[data-action="fig-prev"]'), bn = fig.querySelector('[data-action="fig-next"]');
+    if (bp) bp.disabled = (n === 1); if (bn) bn.disabled = (n === FIGTOT);
+    if (!desdeTexto) {
+      var objetivo = null;
+      document.querySelectorAll('.step[data-paso]').forEach(function (st) {
+        var es = st.dataset.paso === String(n);
+        st.classList.toggle('open', es);
+        if (es) objetivo = st;
+      });
+      /* en pantalla ancha la figura queda fija: se acerca el paso sin mover la figura */
+      if (objetivo && window.matchMedia('(min-width:1100px)').matches) {
+        var r = objetivo.getBoundingClientRect();
+        if (r.top < 70 || r.top > window.innerHeight - 80) objetivo.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }
+  window.setFig = setFig;
+
+  /* ============ Geometría proyectiva (coordenadas homogéneas) ============ */
+  function cross(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+  var join = cross, meet = cross;
+  function H(p) { return [p[0], p[1], 1]; }
+  function deh(p) {
+    var n = Math.max(Math.abs(p[0]), Math.abs(p[1]), Math.abs(p[2]));
+    if (!p || n === 0 || Math.abs(p[2]) / n < 1e-9) return null;
+    return [p[0] / p[2], p[1] / p[2]];
+  }
+  function paralela(l, P) { return [l[0], l[1], -(l[0] * P[0] + l[1] * P[1])]; }
+  function medio(P, Q) { return [(P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2]; }
+  /* razón doble (CA·DB):(CB·DA) con abscisas homogéneas (s : w) sobre una recta */
+  function razonH(pts, g0, u) {
+    var s = [], w = [];
+    pts.forEach(function (P) {
+      var n = Math.max(Math.abs(P[0]), Math.abs(P[1]), Math.abs(P[2])) || 1;
+      var q = [P[0] / n, P[1] / n, P[2] / n];
+      s.push((q[0] - q[2] * g0[0]) * u[0] + (q[1] - q[2] * g0[1]) * u[1]);
+      w.push(q[2]);
+    });
+    var nu = (s[0] * w[2] - s[2] * w[0]) * (s[1] * w[3] - s[3] * w[1]);
+    var de = (s[1] * w[2] - s[2] * w[1]) * (s[0] * w[3] - s[3] * w[0]);
+    return Math.abs(de) < 1e-14 ? null : nu / de;
+  }
+  function dirLinea(l) { var n = Math.hypot(l[0], l[1]); return [l[1] / n, -l[0] / n]; }
+
+  /* ============ Laboratorio ============ */
+  var A = [-3, 0], B = [1, 0], E = [0, 1, 0];
+  var INI = { O: [-0.5, 4], Op: [-2, -3], C: [3, 0], th: Math.atan2(2, -4) };
+  var S = { O: INI.O.slice(), Op: INI.Op.slice(), C: INI.C.slice(), th: INI.th };
+  var VIS = { cuad: true, sol: true, trans: false };
+  var WW = 580, HH = 560;
+  function X(x) { return 290 + 57 * x; }
+  function Y(y) { return 302.8 - 57 * y; }
+  function wx(px) { return (px - 290) / 57; }
+  function wy(py) { return (302.8 - py) / 57; }
+  /* manija de la recta s: un punto a distancia fija de C, en la dirección th */
+  function puntoT() { return [S.C[0] + 6 * Math.cos(S.th), S.C[1] + 6 * Math.sin(S.th)]; }
+  function distPL(P, l) { return Math.abs(l[0] * P[0] + l[1] * P[1] + l[2]) / Math.hypot(l[0], l[1]); }
+
+  function resolver() {
+    var O = S.O, Op = S.Op, C = S.C, r = { ok: true };
+    var a = join(H(O), H(A)), b = join(H(O), H(B)), c = join(H(O), H(C));
+    var ap = join(H(Op), H(A)), bp = join(H(Op), H(B)), cp = join(H(Op), H(C));
+    r.a = a; r.b = b; r.c = c; r.ap = ap; r.bp = bp; r.cp = cp;
+    if (Math.abs(C[0] - A[0]) < 0.12 || Math.abs(C[0] - B[0]) < 0.12) {
+      r.ok = false; r.aviso = 'C coincide con ' + (Math.abs(C[0] - A[0]) < 0.12 ? 'A' : 'B') + ': dos de las rectas dadas son la misma y no hay cuarto armónico.';
+      return r;
+    }
+    if (Math.hypot(O[0] - Op[0], O[1] - Op[1]) < 0.3) {
+      r.ok = false; r.aviso = 'O y O′ coinciden: no hay dos haces distintos.'; return r;
+    }
+    // construcción del apunte con P = O: s por C, R = s ∩ a, Q = s ∩ b, S = RB ∩ QA, D = OS ∩ e
+    var T = puntoT(), sl = join(H(C), H(T));
+    r.T = T; r.s = sl;
+    if (Math.abs(Math.sin(S.th)) < 0.04) { r.ok = false; r.aviso = 's coincide con el eje: R y Q serían A y B, y no aparece nada nuevo.'; return r; }
+    if (distPL(O, sl) < 0.12) { r.ok = false; r.aviso = 's pasa por O: es la recta c, y R y Q coinciden con O.'; return r; }
+    var Rh = meet(sl, a), Qh = meet(sl, b);
+    var rb = join(Rh, H(B)), qa = join(Qh, H(A)), Sh = meet(rb, qa);
+    var os = cross(H(O), Sh), Dh = meet(os, E), Kh = meet(os, sl);
+    var d = os, dp = cross(H(Op), Dh);
+    r.R = deh(Rh); r.Q = deh(Qh); r.Sq = deh(Sh); r.K = deh(Kh); r.rb = rb; r.qa = qa;
+    r.Dh = Dh; r.D = deh(Dh); r.d = d; r.dp = dp;
+    r.rABCD = razonH([H(A), H(B), H(C), Dh], [0, 0], [1, 0]);
+    // comprobación: t ∥ c por el punto medio de OA; t' ∥ c' por el punto medio de O'A
+    var t = paralela(c, medio(O, A)), tp = paralela(cp, medio(Op, A));
+    var Mt = deh(meet(a, t)), Nt = deh(meet(b, t)), Mp = deh(meet(ap, tp)), Np = deh(meet(bp, tp));
+    r.t = t; r.tp = tp; r.M = Mt; r.N = Nt; r.Mp = Mp; r.Np = Np;
+    r.Qt = medio(Mt, Nt); r.Qtp = medio(Mp, Np);
+    r.h1 = distPL(r.Qt, d); r.h2 = distPL(r.Qtp, dp);
+    r.dIgual = Math.abs(cross(d, dp)[0]) + Math.abs(cross(d, dp)[1]) + Math.abs(cross(d, dp)[2]) < 1e-9 * (Math.hypot(d[0], d[1], d[2]) * Math.hypot(dp[0], dp[1], dp[2]) + 1);
+    return r;
+  }
+  window.resolverLab = function (st) {
+    if (st) { S.O = st.O.slice(); S.Op = st.Op.slice(); S.C = st.C.slice(); if (st.th !== undefined) S.th = st.th; drawLab(); }
+    return resolver();
+  };
+
+  function clipLine(l) {
+    var a = l[0], b = l[1], c = l[2], pts = [];
+    // pasar a pantalla: x = X(u), y = Y(v)  =>  u = (x-290)/57, v = (302.8-y)/57
+    var A2 = a / 57, B2 = -b / 57, C2 = c - a * 290 / 57 + b * 302.8 / 57;
+    function add(x, y) {
+      if (!isFinite(x) || !isFinite(y) || x < -1 || x > WW + 1 || y < -1 || y > HH + 1) return;
+      for (var i = 0; i < pts.length; i++) if (Math.hypot(pts[i][0] - x, pts[i][1] - y) < 1e-6) return;
+      pts.push([x, y]);
+    }
+    if (Math.abs(B2) > 1e-12) { add(0, -C2 / B2); add(WW, -(A2 * WW + C2) / B2); }
+    if (Math.abs(A2) > 1e-12) { add(-C2 / A2, 0); add(-(B2 * HH + C2) / A2, HH); }
+    return pts.length < 2 ? null : [pts[0], pts[1]];
+  }
+
+  var ctx, cv;
+  function linea(l, col, w, dash) {
+    var s = clipLine(l); if (!s) return null;
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []);
+    ctx.beginPath(); ctx.moveTo(s[0][0], s[0][1]); ctx.lineTo(s[1][0], s[1][1]); ctx.stroke(); ctx.restore();
+    return s;
+  }
+  function punto(P, col, r) {
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(X(P[0]), Y(P[1]), r || 4, 0, Math.PI * 2); ctx.fill();
+  }
+  function rotulo(txt, x, y, col, al) {
+    ctx.save();
+    ctx.font = 'italic 16px "STIX Two Text", "Times New Roman", serif';
+    ctx.textAlign = al || 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 4; ctx.strokeStyle = '#FFFDF8'; ctx.lineJoin = 'round';
+    ctx.strokeText(txt, x, y); ctx.fillStyle = col; ctx.fillText(txt, x, y); ctx.restore();
+  }
+  function rotuloLinea(l, nombre, V, col) {
+    // rótulo sobre la recta, del otro lado del eje respecto de su vértice
+    if (Math.abs(l[0]) < 1e-12) return;
+    var yy = -Math.sign(V[1]) * 1.3, xx = -(l[1] * yy + l[2]) / l[0];
+    var px = X(xx), py = Y(yy);
+    if (px < 14 || px > WW - 24 || py < 14 || py > HH - 14) return;
+    rotulo(nombre, px + 9, py, col, 'left');
+  }
+
+  function fmt(v) {
+    if (v === null || !isFinite(v)) return '∞';
+    var s = (Math.abs(v) < 5e-10 ? 0 : v).toFixed(4).replace('.', ',');
+    return s.replace('-', '−');
+  }
+
+  function drawLab() {
+    cv = document.getElementById('cv-lab'); if (!cv) return;
+    var dpr = window.devicePixelRatio || 1;
+    if (cv.width !== Math.round(WW * dpr)) { cv.width = Math.round(WW * dpr); cv.height = Math.round(HH * dpr); }
+    ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#FFFDF8'; ctx.fillRect(0, 0, WW, HH);
+    ctx.strokeStyle = 'rgba(43,90,147,.05)'; ctx.lineWidth = 1;
+    for (var gx = 0; gx < WW; gx += 28) { ctx.beginPath(); ctx.moveTo(gx + .5, 0); ctx.lineTo(gx + .5, HH); ctx.stroke(); }
+    for (var gy = 0; gy < HH; gy += 28) { ctx.beginPath(); ctx.moveTo(0, gy + .5); ctx.lineTo(WW, gy + .5); ctx.stroke(); }
+
+    var r = resolver();
+    var BL = '#2B5A93', TE = '#0d9488', VI = '#7c3aed', GR = '#45785A', IN = '#20201C', GY = '#8A857A';
+    linea(E, IN, 2.4);
+    [r.a, r.b, r.c].forEach(function (l) { linea(l, BL, 1.6); });
+    [r.ap, r.bp, r.cp].forEach(function (l) { linea(l, TE, 1.6); });
+    if (r.ok && VIS.trans) {
+      linea(r.t, GY, 1.4, [3, 4]); linea(r.tp, GY, 1.4, [3, 4]);
+      [r.M, r.N, r.Mp, r.Np].forEach(function (Pq) { punto(Pq, GY, 3.5); });
+      punto(r.Qt, GY, 4.5); punto(r.Qtp, GY, 4.5);
+    }
+    if (VIS.cuad && r.s) linea(r.s, VI, 1.4, [6, 4]);
+    if (r.ok && VIS.cuad) {
+      linea(r.rb, VI, 1.4, [6, 4]); linea(r.qa, VI, 1.4, [6, 4]);
+      if (!VIS.sol) linea(r.d, VI, 1.4, [6, 4]);
+      [['R', r.R, -12, -10], ['Q', r.Q, 12, -10], ['S', r.Sq, 13, 10], ['K', r.K, -13, -6]].forEach(function (q) {
+        if (q[1]) { punto(q[1], VI, 4); rotulo(q[0], X(q[1][0]) + q[2], Y(q[1][1]) + q[3], VI); }
+      });
+    }
+    if (r.ok && VIS.sol) { linea(r.d, GR, 2.6); linea(r.dp, GR, 2.6); }
+    rotuloLinea(r.a, 'a', S.O, BL); rotuloLinea(r.b, 'b', S.O, BL); rotuloLinea(r.c, 'c', S.O, BL);
+    rotuloLinea(r.ap, 'a′', S.Op, TE); rotuloLinea(r.bp, 'b′', S.Op, TE); rotuloLinea(r.cp, 'c′', S.Op, TE);
+    if (r.ok && VIS.sol) { rotuloLinea(r.d, 'd', S.O, GR); rotuloLinea(r.dp, 'd′', S.Op, GR); }
+    punto(A, BL); punto(B, BL);
+    rotulo('A', X(A[0]), Y(0) - 14, IN); rotulo('B', X(B[0]), Y(0) - 14, IN);
+    function manija(Pm, nombre, dx, dy) {
+      ctx.fillStyle = '#C77A40'; ctx.beginPath(); ctx.arc(X(Pm[0]), Y(Pm[1]), 6.5, 0, Math.PI * 2); ctx.fill();
+      rotulo(nombre, X(Pm[0]) + dx, Y(Pm[1]) + dy, IN, 'left');
+    }
+    manija(S.C, 'C', -5, -17); manija(S.O, 'O', 12, -12); manija(S.Op, 'O′', 12, -12);
+    if (VIS.cuad && r.T) manija(r.T, 's', -8, -16);
+    rotulo('e', WW - 14, Y(0) - 14, IN);
+    if (r.ok && r.D && r.D[0] > -5 && r.D[0] < 5) {
+      punto(r.D, GR, 5.5); rotulo('D', X(r.D[0]) - 16, Y(0) + 18, GR);
+    }
+
+    var set = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v; };
+    var av = document.getElementById('lv-aviso');
+    if (!r.ok) {
+      set('lv-r', '—'); set('lv-h1', '—'); set('lv-h2', '—');
+      if (av) { av.textContent = r.aviso; av.className = 'lab-aviso alerta'; }
+      return;
+    }
+    set('lv-r', fmt(r.rABCD));
+    set('lv-h1', 'distancia ' + fmt(r.h1)); set('lv-h2', 'distancia ' + fmt(r.h2));
+    var msg;
+    if (!r.D) msg = 'C está en el punto medio de AB: OS es paralela al eje, D es su punto impropio, y d y d′ son paralelas a e.';
+    else if (r.dIgual) msg = 'D cayó sobre la recta OO′: d y d′ coinciden con OO′.';
+    else if (S.giro) msg = 'Giraste s: R, Q y S cambiaron, pero D sigue en el mismo lugar. D depende sólo de A, B y C.';
+    else msg = 'Arrastrá la manija de s y fijate si D cambia.';
+    if (av) { av.textContent = msg; av.className = 'lab-aviso'; }
+  }
+  window.drawLab = drawLab;
+
+  function resetLab() {
+    S.O = INI.O.slice(); S.Op = INI.Op.slice(); S.C = INI.C.slice(); S.th = INI.th; S.giro = false; drawLab();
+  }
+  window.resetLab = resetLab;
+
+  /* ============ Arrastre ============ */
+  var drag = null;
+  function pos(ev) {
+    var rc = cv.getBoundingClientRect();
+    return [(ev.clientX - rc.left) * WW / rc.width, (ev.clientY - rc.top) * HH / rc.height];
+  }
+  function limitar(k, x, y) {
+    x = Math.max(-4.5, Math.min(4.5, x));
+    if (k === 'C') return [x, 0];
+    y = Math.max(-4.6, Math.min(5.1, y));
+    if (Math.abs(y) < 0.5) y = (y >= 0 ? 0.5 : -0.5);
+    return [x, y];
+  }
+  function iniciarArrastre() {
+    cv = document.getElementById('cv-lab'); if (!cv) return;
+    cv.addEventListener('pointerdown', function (ev) {
+      var p = pos(ev), best = null, bd = 20;
+      [['O', S.O], ['Op', S.Op], ['C', S.C]].concat(VIS.cuad ? [['T', puntoT()]] : []).forEach(function (q) {
+        var dd = Math.hypot(X(q[1][0]) - p[0], Y(q[1][1]) - p[1]);
+        if (dd < bd) { bd = dd; best = q[0]; }
+      });
+      if (best) { drag = best; cv.setPointerCapture(ev.pointerId); cv.style.cursor = 'grabbing'; ev.preventDefault(); }
+    });
+    cv.addEventListener('pointermove', function (ev) {
+      if (!drag) return;
+      var p = pos(ev);
+      if (drag === 'T') {
+        S.th = Math.atan2(wy(p[1]) - S.C[1], wx(p[0]) - S.C[0]);
+        S.giro = true;
+      } else S[drag] = limitar(drag, wx(p[0]), wy(p[1]));
+      drawLab();
+    });
+    var fin = function () { drag = null; cv.style.cursor = 'grab'; };
+    cv.addEventListener('pointerup', fin); cv.addEventListener('pointercancel', fin);
+    cv.addEventListener('keydown', function (ev) {
+      if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+        S.C = limitar('C', S.C[0] + (ev.key === 'ArrowRight' ? 0.1 : -0.1), 0); drawLab(); ev.preventDefault();
+      }
+    });
+  }
+
+  function init() {
+    if (init.done) return; init.done = true;
+    iniciarArrastre(); drawLab(); setFig(1, true);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawLab);
+  }
+  document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState !== 'loading') init();
+})();
+
+</script>
+</body>
+</html>
